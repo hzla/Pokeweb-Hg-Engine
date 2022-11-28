@@ -91,7 +91,7 @@ def read_narc_data(data, narc_format, file_name, narc_name):
 
 	#CONVERT TO READABLE FORMAT USING CONSTANTS/TEXT BANKS
 	file["readable"] = to_readable(file["raw"], file_name)
-	TRPOK_INFO.append([file["raw"]["template"], file["raw"]["num_pokemon"]])
+	TRPOK_INFO.append([file["raw"]["template"], file["raw"]["num_pokemon"], file["readable"]])
 	
 	#OUTPUT TO JSON
 	if not os.path.exists(f'{ROM_NAME}/json/{narc_name}'):

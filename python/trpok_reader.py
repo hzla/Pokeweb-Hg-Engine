@@ -27,7 +27,8 @@ def set_global_vars():
 	MOVES = open(f'texts/moves.txt', mode="r").read().splitlines()
 	ABILITIES = open(f'texts/abilities.txt', mode="r").read().splitlines()
 	GENDERS = ['Default', "Male", "Female"]
-	FLAGS = ['Nothing', 'Status', 'Hp', 'Atk', 'Def', 'Spd', 'Spatk', 'Spdef', 'Types', 'PP Counts', 'Nickname']
+	FLAGS = ['Status', 'Hp', 'Atk', 'Def', 'Spd', 'Spatk', 'Spdef', 'Types', 'PP_Counts', 'Nickname']
+
 
 
 
@@ -42,6 +43,7 @@ def set_global_vars():
 	[2, "move_4"],
 	[2, "custom_ability"],
 	[2, "ball"],
+	[1, "padding"],
 	[1, "hp_iv"],
 	[1, "atk_iv"],
 	[1, "def_iv"],
@@ -69,10 +71,10 @@ def set_global_vars():
 	[1, "move_1_pp"],
 	[1, "move_2_pp"],
 	[1, "move_3_pp"],
-	[1, "move_14_pp"]]
+	[1, "move_4_pp"]]
 
-	for n in range(0,11):
-		NARC_FORMAT.append([2, f'nickname_{n}'])
+	# for n in range(0,11):
+	# 	NARC_FORMAT.append([2, f'nickname_{n}'])
 
 	NARC_FORMAT.append([2, 'ballseal'])
 
@@ -83,32 +85,100 @@ def output_trpok_json(trpok_info):
 	data_index = 0
 	narc = ndspy.narc.NARC.fromFile(NARC_PATH)
 
-
+	print("triggered#####")
 	for data in narc.files:	
 		data_name = data_index
 		template = trpok_info[data_index][0]
 		num_pokemon = trpok_info[data_index][1]
-		narc_format = NARC_FORMAT
+		narc_format = copy.deepcopy(NARC_FORMAT)
+		trdata = trpok_info[data_index][2]
 
-		read_narc_data(data, narc_format, data_name, "trpok", template, num_pokemon)
+
+		if trdata["has_moves"] != 1:
+			for n in range(1,5):
+				narc_format.remove([2, f"move_{n}"])
+
+		if trdata["has_items"] != 1:
+			narc_format.remove([2, "item_id"])
+
+		if trdata["set_abilities"] != 1:
+			narc_format.remove([2, "custom_ability"])
+
+		if trdata["set_ball"] != 1:
+			narc_format.remove([2, "ball"])
+
+		if trdata["set_iv_ev"] != 1:
+			for value_type in ["iv", "ev"]:
+				for stat in ["hp", "atk", "def", "spd", "spatk", "spdef"]:
+					narc_format.remove([1, f'{stat}_{value_type}'])	
+		
+		if trdata["set_nature"] != 1:			
+			narc_format.remove([1, "nature"])
+
+		if trdata["shiny_lock"] != 1:			
+			narc_format.remove([1, "shiny_lock"])
+		
+		additional_flags = {}
+		
+		if trdata["additional_flags"] != 1:			
+			narc_format.remove([4, "additional_flags"])
+
+		read_narc_data(data, narc_format, data_name, "trpok", template, num_pokemon, trdata)
 		data_index += 1
 
 	print("trpok")
 
-def read_narc_data(data, narc_format, file_name, narc_name, template, num_pokemon):
+def read_narc_data(data, narc_format, file_name, narc_name, template, num_pokemon, trdata):
 	stream = io.BytesIO(data)
 	file = {"raw": {}, "readable": {} }
-	
-	if num_pokemon > 0:
-		print(file_name)
-		print(len(data) / num_pokemon)
-		print(data)
-	
+
+	# print(file_name)
+	# print(narc_format)
+
+	print(file_name)
+	print("###############")
 	#USE THE FORMAT LIST TO PARSE BYTES
 	
 	for n in range(0, num_pokemon):
+		skip_entry = False
+		additional_flags = {}
 		for entry in narc_format: 
-			file["raw"][f'{entry[1]}_{n}'] = read_bytes(stream, entry[0])
+			skip_entry = False
+
+			# remove unused additional fields if additional flags are used
+			if additional_flags != {}:
+				print(additional_flags)
+				for flag in FLAGS[0:8]:
+					if additional_flags[flag] != 1:
+						if entry[1] == flag.lower():
+							skip_entry = True
+
+				if additional_flags["Types"] != 1:
+					if entry[1] == "type_1" or entry[1] == "type_2":
+						skip_entry = True
+
+				if additional_flags["PP_Counts"] != 1:
+					if entry[1] == "move_1_pp" or entry[1] == "move_2_pp" or entry[1] == "move_3_pp" or entry[1] == "move_4_pp":
+						skip_entry = True
+
+			if not skip_entry:
+				entry_data = copy.deepcopy(read_bytes(stream, entry[0]))
+				file["raw"][f'{entry[1]}_{n}'] = entry_data
+
+			# set additional flag data after reading additional flags
+			additional_flags = {}
+
+			if entry[1] == "additional_flags":
+				print(file["raw"][f'{entry[1]}_{n}'])
+				index = 10
+				props = bin(entry_data)[2:].zfill(index) 
+				
+				for prop in FLAGS:
+					amount = int(props[index - 1])
+					additional_flags[prop] = amount
+					index -= 1
+
+	
 
 	#CONVERT TO READABLE FORMAT USING CONSTANTS/TEXT BANKS
 	file["readable"] = to_readable(file["raw"], file_name, template, num_pokemon)
@@ -126,27 +196,31 @@ def to_readable(raw, file_name, template, num_pokemon):
 	readable = copy.deepcopy(raw)
 
 	readable["count"] = num_pokemon
-
 	for n in range(0, num_pokemon):
 		
 		readable[f'species_id_{n}'] = POKEDEX[raw[f'species_id_{n}']]
 		
 
-		readable[f'custom_ability_{n}'] = ABILITIES[raw[f'custom_ability_{n}']]
+		if (f'custom_ability_{n}') in raw:
+			readable[f'custom_ability_{n}'] = ABILITIES[raw[f'custom_ability_{n}']]
 		
-		for m in range(1,5):
-			readable[f'move_{m}_{n}'] = MOVES[raw[f'move_{m}_{n}']]
-
-
-		readable[f'item_id_{n}'] = ITEMS[raw[f'item_id_{n}']]
-
-		index = 11
-		props = bin(raw[f"additional_flags_{n}"])[2:].zfill(index) 
 		
-		for prop in FLAGS:
-			amount = int(props[index - 1])
-			readable[prop] = amount
-			index -= 1
+		if (f'move_{1}_{0}') in raw:
+			for m in range(1,5):
+				readable[f'move_{m}_{n}'] = MOVES[raw[f'move_{m}_{n}']]
+
+		if (f'item_id_{n}') in raw:
+			readable[f'item_id_{n}'] = ITEMS[raw[f'item_id_{n}']]
+
+		
+		if (f"additional_flags_{n}") in raw:
+			index = 10
+			props = bin(raw[f"additional_flags_{n}"])[2:].zfill(index) 
+			
+			for prop in FLAGS:
+				amount = int(props[index - 1])
+				readable[prop] = amount
+				index -= 1
 
 	return readable
 
