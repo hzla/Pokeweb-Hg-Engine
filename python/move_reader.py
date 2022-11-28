@@ -22,23 +22,22 @@ def set_global_vars():
 		settings = json.load(outfile) 
 		ROM_NAME = settings['rom_name']
 
-	TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark","Fairy"]
-
+	TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fairy" "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"]
 	CATEGORIES = ["Status","Physical","Special"]
 
 	EFFECT_CATEGORIES = ["No Special Effect", "Status Inflicting","Target Stat Changing","Healing","Chance to Inflict Status","Raising Target's Stat along Attack", "Lowering Target's Stat along Attack","Raise user stats","Lifesteal","OHKO","Weather","Safeguard", "Force Switch Out", "Unique Effect"]
 
-	EFFECTS = open(f'Reference_Files/effects.txt', "r").read().splitlines() 
+	EFFECTS = open(f'texts/effects.txt', "r").read().splitlines() 
 
 	STATUSES = ["None","Visible","Temporary","Infatuation", "Trapped"]
 
-	TARGETS = ["Any adjacent","Random (User/ Adjacent ally)","Random adjacent ally","Any adjacent opponent","All excluding user","All adjacent opponents","User's party","User","Entire Field","Random adjacent opponent","Field Itself","Opponent's side of field","User's side of field","User (Selects target automatically)"]
+	TARGETS = ["Selected", "Depends", "Random", "Both", "Foes And Ally", "User", "User Side", "Active Field", "Opponents_Field", "Ally", "Acupressure", "Me First"]
 
 	STATS = ["None", "Attack", "Defense", "Special Attack", "Special Defense", "Speed", "Accuracy", "Evasion", "All" ]
 
-	PROPERTIES = ["contact","requires_charge","recharge_turn","blocked_by_protect","reflected_by_magic_coat","stolen_by_snatch","copied_by_mirror_move","punch_move","sound_move","grounded_by_gravity","defrosts_targets","hits_non-adjacent_opponents","healing_move","hits_through_substitute"]
+	PROPERTIES = ["contact","blocked_by_protect","reflected_by_magic_coat","stolen_by_snatch","copied_by_mirror_move","kings_rock","keep_hp_bar","hide_shadow"]
 
-	MOVE_NAMES = open(f'{ROM_NAME}/texts/moves.txt', mode="r").read().splitlines()
+	MOVE_NAMES = open(f'texts/moves.txt', mode="r").read().splitlines()
 
 	for i,move in enumerate(MOVE_NAMES):
 		MOVE_NAMES[i] = re.sub(r'[^A-Za-z0-9 \-]+', '', move)
@@ -46,37 +45,20 @@ def set_global_vars():
 
 	RESULT_EFFECTS = open(f'Reference_Files/result_effects.txt', "r").read().splitlines()
 
-	MOVES_NARC_FORMAT = [[1, "type"],
-	[1,	"effect_category"],
-	[1,	"category"],
-	[1,	"power"],
-	[1,	"accuracy"],
-	[1,	"pp"],
-	[1,	"priority"],
-	[1,	"hits"],
-	[2,	"result_effect"],
-	[1,	"effect_chance"],
-	[1,	"status"],
-	[1,	"min_turns"],
-	[1,	"max_turns"],
-	[1,	"crit"],
-	[1,	"flinch"],
-	[2,	"effect"],
-	[1,	"recoil"],
-	[1,	"healing"],
-	[1,	"target"],
-	[1,	"stat_1"],
-	[1,	"stat_2"],
-	[1,	"stat_3"],
-	[1,	"magnitude_1"],
-	[1,	"magnitude_2"],
-	[1,	"magnitude_3"],
-	[1,	"stat_chance_1"],
-	[1,	"stat_chance_2"],
-	[1,	"stat_chance_3"],
-	[2,	"flag"], ## Flag is always 53 53
-	[2,	"properties"]]
-	
+	MOVES_NARC_FORMAT = [
+	[2, "effect"],
+	[1, "category"],
+	[1, "power"],
+	[1, 'type'],
+	[1, "accuracy"],
+	[1, "pp"],
+	[1, "effect_chance"],
+	[2, "target"],
+	[1, "priority"],
+	[1, "properties"],
+	[1, "contest_effect"],
+	[1, "contest_type"]]
+
 
 
 #################################################################
@@ -123,58 +105,33 @@ def to_readable(raw, file_name):
 		readable["name"]  = MOVE_NAMES[file_name] 
 
 
-	if file_name >= 673:
-		readable["animation"] = 0
 
 
 	
 	readable["type"] = TYPES[raw["type"]]
-
-	readable["effect_category"] = EFFECT_CATEGORIES[raw["effect_category"]]
 	
 	readable["category"] = CATEGORIES[raw["category"]]
 
-	#special case for tri attack
-	if raw["result_effect"] == 65535:
-		readable["result_effect"] = EFFECTS[36]
-	else:
-		readable["result_effect"] = RESULT_EFFECTS[raw["result_effect"]]
 
 	readable["effect"] = EFFECTS[raw["effect"]]
 
-	readable["status"] = STATUSES[raw["status"]]
 
-	if raw["recoil"] > 0:
-		readable["recoil"] = 256 - raw["recoil"]
+	# print(raw["target"])
+	readable["target"] = raw["target"]
 
-	readable["target"] = TARGETS[raw["target"]]
-
-	readable["stat_1"] = STATS[raw["stat_1"]]
-	readable["stat_2"] = STATS[raw["stat_2"]]
-	readable["stat_3"] = STATS[raw["stat_3"]]
-
-	if raw["magnitude_1"] > 6:
-		readable["magnitude_1"] = raw["magnitude_1"] - 256
-
-	if raw["magnitude_2"] > 6:
-		readable["magnitude_2"] = raw["magnitude_2"] - 256
-
-	if raw["magnitude_3"] > 6:
-		readable["magnitude_3"] = raw["magnitude_3"] - 256
 
 	index = 8
-	binary_hits = bin(raw["hits"])[2:].zfill(index)
-
-	hits = ["min_hits", "max_hits"]
-	for hit in hits:
-		amount = int(binary_hits[index-4:index],2)
-		readable[hit] = amount
-		index -= 4
-
-	index = 14
 	binary_props = bin(raw["properties"])[2:].zfill(index) 
 	
 	for prop in PROPERTIES:
+		amount = int(binary_props[index - 1])
+		readable[prop] = amount
+		index -= 1
+
+	index = 12
+	binary_props = bin(raw["target"])[2:].zfill(index) 
+	
+	for prop in TARGETS:
 		amount = int(binary_props[index - 1])
 		readable[prop] = amount
 		index -= 1

@@ -22,23 +22,20 @@ def set_global_vars():
 		BASE_ROM = settings['base_rom']
 		BASE_VERSION = settings['base_version']
 
-	MOVES = open(f'{ROM_NAME}/texts/moves.txt', mode="r").read().splitlines()
+	MOVES = open(f'texts/moves.txt', mode="r").read().splitlines()
 
 	for i,move in enumerate(MOVES):
 		MOVES[i] = re.sub(r'[^A-Za-z0-9 \-]+', '', move)
 
 	TM_FORMAT = []
 
-	TM_OFFSETS = {"B": 0x9aaa0, "W": 0x9aab8, "B2": 0x8cc84, "W2": 0x8ccb0 }
 
-	TM_OFFSET = TM_OFFSETS[BASE_VERSION]
+	TM_OFFSET = 0x1000cc
 
 	for n in range(1, 93):
 		TM_FORMAT.append([2, f'tm_{n}'])
-	for n in range(1, 7):
+	for n in range(1, 9):
 		TM_FORMAT.append([2, f'hm_{n}'])
-	for n in range(93, 96):
-		TM_FORMAT.append([2, f'tm_{n}'])
 
 
 #################################################################
@@ -93,10 +90,9 @@ def to_readable(raw, file_name=""):
 
 	for n in range(1, 93):
 		readable[f'tm_{n}'] = MOVES[raw[f'tm_{n}']]
-	for n in range(1, 7):
+	for n in range(1, 9):
 		readable[f'hm_{n}'] = MOVES[raw[f'hm_{n}']]
-	for n in range(93, 96):
-		readable[f'tm_{n}'] = MOVES[raw[f'tm_{n}']]
+
 	
 	return readable
 

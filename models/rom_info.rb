@@ -1,7 +1,7 @@
 class RomInfo
 
 	def self.pokemon_names
-		file_path = "#{$rom_name}/texts/pokedex.txt"
+		file_path = "texts/pokedex.txt"
 		data = File.open(file_path, "r:ISO8859-1").read.split("\n").map do |p|
 			p.name_titleize
 		end
@@ -23,15 +23,13 @@ class RomInfo
 
 
 	def self.types
-		typing = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"].map do |type|
+		typing = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fairy" "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"].map do |type|
 			type.upcase
 		end
-        typing << "FAIRY" if $fairy
-        typing
 	end
 
 	def self.abilities
-		File.open("#{$rom_name}/texts/abilities.txt"){|f| f.read}.split("\n").map do |ab|
+		File.open("texts/abilities.txt"){|f| f.read}.split("\n").map do |ab|
 			ab.titleize
 		end
 	end
@@ -42,7 +40,7 @@ class RomInfo
 
 	def self.items
 		# encoding for latin text ISO8859-1
-		File.open("#{$rom_name}/texts/items.txt", encoding: "ISO8859-1"){|f| f.read}.split("\n")
+		File.open("texts/items.txt", encoding: "ISO8859-1"){|f| f.read}.split("\n")
 	end
 
 	def self.egg_groups
@@ -94,7 +92,7 @@ class RomInfo
 	end
 
 	def self.effects
-		File.open("Reference_Files/effects.txt"){|f| f.read}.split("\n")
+		File.open("texts/effects.txt"){|f| f.read}.split("\n")
 	end
 
 	def self.result_effects

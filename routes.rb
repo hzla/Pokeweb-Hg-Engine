@@ -23,7 +23,7 @@ before do
 	@rom_name = $rom_name.split("/")[1]
 	tabs = ['headers', 'personal', 'trainers', 'encounters', 'moves', 'tms', 'items', 'marts', 'grottos', 'story_texts', 'info_texts', 'logs']
 	
-	if SessionSettings.base_rom == "BW"
+	if SessionSettings.base_rom != "BW2"
 		tabs.delete('marts')
 		tabs.delete('grottos')
 	end
@@ -82,7 +82,7 @@ post '/extract' do
 	end
 
 	content_type :json
-  	return { url: "/headers" }.to_json
+  	return { url: "/logs" }.to_json
 end
 
 post '/rom/save' do

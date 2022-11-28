@@ -21,12 +21,16 @@ def set_global_vars():
 		settings = json.load(outfile) 
 		ROM_NAME = settings['rom_name']
 
-	TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark","Fairy"]
+	TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fairy" "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"]
+	
+
+
+
 	EGG_GROUPS = ["~","Monster","Water 1","Bug","Flying","Field","Fairy","Grass","Human-Like","Water 3","Mineral","Amorphous","Water 2","Ditto","Dragon","Undiscovered"];
 	GROWTHS = ["Medium Fast","Erratic","Fluctuating","Medium Slow","Fast","Slow","Medium Fast","Medium Fast"]
-	ABILITIES = open(f'{ROM_NAME}/texts/abilities.txt', "r").read().splitlines() 
-	ITEMS = open(f'{ROM_NAME}/texts/items.txt', mode="r").read().splitlines()
-	POKEDEX = open(f'{ROM_NAME}/texts/pokedex.txt', "r").read().splitlines()
+	ABILITIES = open(f'texts/abilities.txt', "r").read().splitlines() 
+	ITEMS = open(f'texts/items.txt', mode="r").read().splitlines()
+	POKEDEX = open(f'texts/pokedex.txt', "r").read().splitlines()
 
 	PERSONAL_NARC_FORMAT = [[1, "base_hp"],
 	[1,	"base_atk"],
@@ -37,11 +41,10 @@ def set_global_vars():
 	[1,	"type_1"],
 	[1,	"type_2"],
 	[1,	"catchrate"],
-	[1,	"stage"],
+	[1,	"base_exp"],
 	[2,	"evs"],
 	[2,	"item_1"],
 	[2,	"item_2"],
-	[2,	"item_3"],
 	[1,	"gender"],
 	[1,	"hatch_cycle"],
 	[1,	"base_happy"],
@@ -50,20 +53,15 @@ def set_global_vars():
 	[1,	"egg_group_2"],
 	[1,	"ability_1"],
 	[1,	"ability_2"],
-	[1,	"ability_3"],
 	[1,	"flee"],
-	[2,	"form_id"],
-	[2,	"form"],
-	[1,	"num_forms"],
-	[1,	"color"],
-	[2,	"base_exp"],
-	[2,	"height"],
-	[2,	"weight"],
+	[3,	"color"],
 	[4, "tm_1-32"],
 	[4, "tm_33-64"],
 	[4, "tm_65-95+hm_1"],
-	[4, "hm_2-6"],
-	[1, "tutors"]]
+	[4, "hm_2-6"]]
+
+
+
 
 
 #################################################################
@@ -84,7 +82,6 @@ def output_personal_json(narc):
 def read_narc_data(data, narc_format, file_name):
 	stream = io.BytesIO(data)
 	pokemon = {"raw": {}, "readable": {} }
-	
 	#USE THE FORMAT LIST TO PARSE BYTES
 	for entry in narc_format: 
 		pokemon["raw"][entry[1]] = read_bytes(stream, entry[0])
@@ -124,7 +121,7 @@ def to_readable(raw, file_name):
 
 
 	try:
-		readable["name"] = POKEDEX[file_name]
+		readable["name"] = POKEDEX[file_name].upper()
 	except IndexError:
 		readable["name"] = "Alt Form"
 
@@ -135,18 +132,22 @@ def to_readable(raw, file_name):
 
 	readable["type_2"] = TYPES[raw["type_2"]]
 
-	readable["item_1"] = ITEMS[raw["item_1"]]
-	readable["item_2"] = ITEMS[raw["item_2"]]
-	readable["item_3"] = ITEMS[raw["item_3"]]
+	try:
 
-	readable["exp_rate"] = GROWTHS[raw["exp_rate"]]
+		readable["item_1"] = ITEMS[raw["item_1"]]
+		readable["item_2"] = ITEMS[raw["item_2"]]
+		readable["exp_rate"] = GROWTHS[raw["exp_rate"]]
+	except IndexError:
+		code.interact(local=dict(globals(), **locals()))
+
+	
 
 	readable["egg_group_1"] = EGG_GROUPS[raw["egg_group_1"]]
 	readable["egg_group_2"] = EGG_GROUPS[raw["egg_group_2"]]
 
 	readable["ability_1"] = ABILITIES[raw["ability_1"]]
 	readable["ability_2"] = ABILITIES[raw["ability_2"]]
-	readable["ability_3"] = ABILITIES[raw["ability_3"]]
+
 
 	readable["form_sprites"] = "Default"
 

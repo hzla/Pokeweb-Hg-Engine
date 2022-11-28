@@ -5,7 +5,6 @@ Level During Night
 Level Requirement
 Trading
 Trade with Held Item
-Karrablast/Shelmet Trade
 Item Use
 Level Requirement + Atk Stat Greater Than Def
 Level Requirement + Atk Stat Equal To Def
@@ -23,7 +22,6 @@ After Learning Specific Move
 Level With Party Member
 Level Requirement + Male
 Level Requirement + Female
-Level Up in Mt. Coronet
-Level Up in Eterna Forest
-Level Up in Route 217
-Level Up near Moss Rock
+Level Up in Electric Field
+Level Up by Moss Rock
+Level Up by Icy Stone

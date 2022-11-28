@@ -56,14 +56,7 @@
 		</div>
 	<% end %>
 </div>
-<div class="expanded-card-content expanded-tutors">
-	<% Personal.get_tutor_list(pok).each_with_index do |tutor_move, i| %>
-		<div class="cell tutor-move <%= tutor_move == "1" ? '-active' : '' %>" data-field-name="tutors" data-narc="personal">
-			<%= tutor_moves[i] %>
-		</div>
-	<% end %>
-			
-</div>
+
 <div class="expanded-card-content expanded-evos">
 	<% evo = evolutions[pok["index"].to_i] %>
 	

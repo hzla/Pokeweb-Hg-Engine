@@ -66,12 +66,6 @@ class Personal
 		poks = poke_data[1..-1]
 
 		showdown = {}
-
-
-		
-
-
-
 		poks.each do |pok|
 			next if !pok
 			showdown_name = pok["name"].name_titleize
@@ -188,12 +182,12 @@ class Personal
 
 	def self.misc_integer_fields
 		# title to display, field_name in json
-		[["Catch Rate", "catchrate"],["Exp Yield", "base_exp"],["Gender", "gender"],["Hatch Rate", "hatch_cycle"],["Happiness", "base_happy"], ["# of Forms", "num_forms"], ["Form Personal ID", "form_id", "int-65535"], ["Form Sprite Offset", "form", "int-65535", "iv-label"], ["Form Sprite IDs", "form_sprites", "array" ]]
+		[["Catch Rate", "catchrate"],["Exp Yield", "base_exp"],["Gender", "gender"],["Hatch Rate", "hatch_cycle"],["Happiness", "base_happy"]]
 	end
 
 	def self.text_fields
 		# title to display, field_name in json, autofill_bank
-		[['50% Held Item', 'item_1', 'items' ],['5% Held Item', 'item_2', 'items' ],['1% Held Item', 'item_3', 'items' ],['Egg Group 1', 'egg_group_1', 'egg_groups' ],['Egg Group 2', 'egg_group_2', 'egg_groups' ],['Growth Rate', 'exp_rate', 'growth_rates' ]]	
+		[['50% Held Item', 'item_1', 'items' ],['5% Held Item', 'item_2', 'items' ],['Egg Group 1', 'egg_group_1', 'egg_groups' ],['Egg Group 2', 'egg_group_2', 'egg_groups' ],['Growth Rate', 'exp_rate', 'growth_rates' ]]	
 	end
 
 	def self.ev_yield_fields

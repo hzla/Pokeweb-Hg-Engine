@@ -20,38 +20,21 @@ def set_global_vars():
 		BASE_ROM = settings['base_rom']
 
 
-	TEMPLATE_FLAGS =["has_moves", "has_items"]
-
-	TRAINER_CLASSES = open(f'{ROM_NAME}/texts/tr_classes.txt', "r").read().splitlines()
-
-	if BASE_ROM == 'BW':
-		TRAINER_NAMES = open(f'Reference_Files/trainer_names.txt', "r").read().splitlines()
-	else:
-		TRAINER_NAMES = open(f'Reference_Files/trainer_names_2.txt', "r").read().splitlines()
+	TEMPLATE_FLAGS =["has_moves", "has_items", "set_abilities", "set_ball", "set_iv_ev", "set_nature", "shiny_lock", "additional_flags"]
 
 
 
 
-	customTnames = f'Reference_Files/trainer_names_{ROM_NAME.split("/")[-1]}.txt'
-	customTclasses = f'Reference_Files/trainer_classes_{ROM_NAME.split("/")[-1]}.txt'
-
-	print("searching for the following custom trainer names/classes files")
-	print(customTclasses)
-	print(customTnames)
+	TRAINER_CLASSES = open(f'texts/tr_classes.txt', "r").read().splitlines()
 
 
-	if os.path.isfile(customTnames) and os.path.isfile(customTclasses):
-		print("custom detected")
-		TRAINER_CLASSES = open(customTclasses, "r").read().splitlines()
-		TRAINER_NAMES = open(customTnames, "r").read().splitlines()
-	else:
-		print("no custom names/classes found")
+	TRAINER_NAMES = open(f'texts/tr_names.txt', "r").read().splitlines()
 
 
 
-	ITEMS = open(f'{ROM_NAME}/texts/items.txt', mode="r").read().splitlines()
+	ITEMS = open(f'texts/items.txt', mode="r").read().splitlines()
 
-	BATTLE_TYPES = ["Singles", "Doubles", "Triples", "Rotation"]
+	BATTLE_TYPES = ["Singles", "Doubles"]
 
 	TRPOK_INFO = []
 
@@ -72,16 +55,15 @@ def set_global_vars():
 
 	NARC_FORMAT = [[1, "template"],
 	[1, "class"],
-	[1, "battle_type_1"],
+	[1, "battle_type"],
 	[1, "num_pokemon"],
 	[2, "item_1"],
 	[2, "item_2"],
 	[2, "item_3"],
 	[2, "item_4"],
 	[4, "ai"],
-	[1, "heal"],
-	[1, "money"],
-	[2, "reward_item"]]
+	[1, "battle_type_2"]
+]
 
 	
 def output_trdata_json(narc):
@@ -128,14 +110,13 @@ def to_readable(raw, file_name):
 	if file_name < len(TRAINER_NAMES):
 		readable["name"] = TRAINER_NAMES[file_name]
 
-	readable["reward_item"] = ITEMS[raw["reward_item"]]
-	readable["battle_type_1"] = BATTLE_TYPES[raw["battle_type_1"]]
+	readable["battle_type"] = BATTLE_TYPES[raw["battle_type"]]
 
 	for n in range(1, 5):
 		readable[f'item_{n}'] = ITEMS[raw[f'item_{n}']]
 
 
-	index = 2
+	index = 8
 	props = bin(raw["template"])[2:].zfill(index) 
 	
 	for prop in TEMPLATE_FLAGS:

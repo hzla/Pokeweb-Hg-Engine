@@ -1,0 +1,14 @@
+/a/0/3/7 - Encounter Data
+
+/a/0/0/2 - Pokemon data
+
+/a/0/3/3 - Level-Up Moves
+
+/a/0/2/7 - Text/Message Files
+
+/a/0/1/1 - Move Data
+
+/a/0/3/4 - Evolutions
+
+/a/0/5/5 - Trainer data
+/a/0/5/6 - Trainer poks
