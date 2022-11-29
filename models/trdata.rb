@@ -58,19 +58,11 @@ class Trdata < Pokenarc
 
 
 	def self.names
-		if SessionSettings.base_rom == "BW"
-			file_name = "#{$rom_name}/message_texts/texts.json"
-			names = JSON.parse(File.open(file_name, "r"){|f| f.read})[190]
-
-			# File.open('Reference_Files/trainer_names.txt', "r").read.split("\n")
-		else
-			file_name = "#{$rom_name}/message_texts/texts.json"
-			names = JSON.parse(File.open(file_name, "r"){|f| f.read})[382]
-		end
+		File.open("texts/tr_names.txt", "r").read.split("\n")	
 	end
 
 	def self.class_names
-		File.open("#{$rom_name}/texts/tr_classes.txt", "r").read.split("\n")	
+		File.open("texts/tr_classes.txt", "r").read.split("\n")	
 	end
 
 	def self.sprite_name_for(trainer, names, i)
@@ -115,34 +107,34 @@ class Trdata < Pokenarc
 	end
 
 	def self.get_locations
-		overworlds = Overworld.get_all
+		# overworlds = Overworld.get_all
 
-		tr_count = files = Dir["#{$rom_name}/json/trdata/*.json"]
-		file_count = files.length
+		# tr_count = files = Dir["#{$rom_name}/json/trdata/*.json"]
+		# file_count = files.length
 
 
 	
 
-		overworlds.each_with_index do |overworld, i|
-			npc_count = overworld["npc_count"]
+		# overworlds.each_with_index do |overworld, i|
+		# 	npc_count = overworld["npc_count"]
 
-			(0..npc_count-1).each do |n|
-				script_id = overworld["npc_#{n}_script_id"]
-				if (script_id > 3000 and script_id < (3000 + file_count)) or (script_id > 5000 and script_id < (5000 + file_count))
+		# 	(0..npc_count-1).each do |n|
+		# 		script_id = overworld["npc_#{n}_script_id"]
+		# 		if (script_id > 3000 and script_id < (3000 + file_count)) or (script_id > 5000 and script_id < (5000 + file_count))
 
-					file_path = "#{$rom_name}/json/trdata/#{script_id % 1000}.json"
-					json_data = JSON.parse(File.open(file_path, "r") {|f| f.read})
+		# 			file_path = "#{$rom_name}/json/trdata/#{script_id % 1000}.json"
+		# 			json_data = JSON.parse(File.open(file_path, "r") {|f| f.read})
 
-					location = Header.find_location_by_map_id(i)
+		# 			location = Header.find_location_by_map_id(i)
 
-					json_data["readable"]["location"] = location
-					File.open(file_path, "w") { |f| f.write json_data.to_json }
-				end
-			end
+		# 			json_data["readable"]["location"] = location
+		# 			File.open(file_path, "w") { |f| f.write json_data.to_json }
+		# 		end
+		# 	end
 
 
 
-		end
+		# end
 
 	end
 

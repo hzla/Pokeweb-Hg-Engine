@@ -36,12 +36,7 @@
 			<% end %>	
 		</div>
 		<div class="expanded-mid">
-			<% Move.stat_modifier_fields.each do |stat_mod| %>
-				<div class="expanded-field">
-					<div class="expanded-field-name"><%= stat_mod["label"] %></div>
-					<div <%= autofill stat_mod %> data-narc="move" data-autocomplete-spy data-field-name="<%= stat_mod['field_name'] %>" class="expanded-field-value" contenteditable="true" data-type="<%= stat_mod['type'] %>" data-autofill="<%= stat_mod['autofill'] %>"><%= move[stat_mod["field_name"]] %></div>
-				</div>
-			<% end %>
+
 		</div>
 		<div class="expanded-right">				
 			<% Move.misc_int_fields.each do |misc_int| %>

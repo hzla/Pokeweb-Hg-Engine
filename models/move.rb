@@ -52,12 +52,7 @@ class Move < Pokenarc
 
 	def self.misc_int_fields
 		[{ "field_name" => "pp", "label" => "PP", "type" => "int-255"},
-			{ "field_name" => "priority", "label" => "Priority", "type" => "int-255"},
-			{ "field_name" => "crit", "label" => "+Crit", "type" => "int-15"},
-			{ "field_name" => "flinch", "label" => "Flinch %", "type" => "int-100"},
-			{ "field_name" => "recoil", "label" => "Recoil %", "type" => "int-255"},
-			{ "field_name" => "healing", "label" => "Heal %", "type" => "int-100"},
-			{ "field_name" => "animation", "label" => "Animation ID", "type" => "int-#{RomInfo.original_move_count - 1}"}
+			{ "field_name" => "priority", "label" => "Priority", "type" => "int-255"}
 		]
 	end
 
@@ -73,20 +68,14 @@ class Move < Pokenarc
 	end
 
 	def self.effect_fields
-		[{ "field_name" => "effect_category", "label" => "Effect Category", "autofill" => "effect_cats"},
-			{ "field_name" => "result_effect", "label" => "Add. Effects", "autofill" => "result_effects"},
+		[
 			{ "field_name" => "effect_chance", "label" => "Add. Effect Proc %", "type" => "int-100"},
-			{ "field_name" => "status", "label" => "Status Type", "autofill" => "status_types"},
-			{ "field_name" => "target", "label" => "Target", "autofill"=> "targets"},
-			{ "field_name" => "min_turns", "label" => "Min Effect Turns", "type"=> "int-255"},
-			{ "field_name" => "max_turns", "label" => "Max Effect Turns", "type"=> "int-255"},
-			{ "field_name" => "min_hits", "label" => "Min Hits", "type"=> "int-255"},
-			{ "field_name" => "max_hits", "label" => "Max Hits", "type"=> "int-255"}
+			{ "field_name" => "target", "label" => "Target", "type" => "int-255"}
 		]
 	end
 
 	def self.props
-		["contact","requires_charge","recharge_turn","blocked_by_protect","reflected_by_magic_coat","stolen_by_snatch","copied_by_mirror_move","punch_move","sound_move","grounded_by_gravity","defrosts_targets","hits_non-adjacent_opponents","healing_move","hits_through_substitute"]
+		["contact","blocked_by_protect","reflected_by_magic_coat","stolen_by_snatch","copied_by_mirror_move"]
 	end
 
 	def self.showdown_subs

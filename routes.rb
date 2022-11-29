@@ -21,7 +21,7 @@ before do
 	$fairy = SessionSettings.fairy?
 	return if !$rom_name
 	@rom_name = $rom_name.split("/")[1]
-	tabs = ['headers', 'personal', 'trainers', 'encounters', 'moves', 'tms', 'items', 'marts', 'grottos', 'story_texts', 'info_texts', 'logs']
+	tabs = [ 'personal', 'trainers', 'encounters', 'moves', 'logs']
 	
 	if SessionSettings.base_rom != "BW2"
 		tabs.delete('marts')

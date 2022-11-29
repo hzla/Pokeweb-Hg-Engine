@@ -38,11 +38,11 @@
 			<div class="expanded-field-main">
 				<div class="trainer-id"><%= i %></div>
 
-				<div class="trainer-name"><%= trainer["name"] %> <%= trainer["location"] ? "(#{trainer["location"]})" : ""  %></div>
+				<div class="trainer-name"><%= trainer["name"] %></div>
 
 				<%= field "class", 'trainer-class', {value: "#{trainer['class']} (#{trainer['class_id']})",  narc: "trdata", autofill: "class_names"} %>		
 
-				<%= field "battle_type_1", 'trainer-btype', {value: trainer["battle_type_1"],  narc: "trdata", autofill: "battle_types"} %>	
+				<%= field "battle_type_1", 'trainer-btype', {value: trainer["battle_type"],  narc: "trdata", autofill: "battle_types"} %>	
 
 				<div class="trainer-moves">
 					<label class="container" data-narc="trdata">
@@ -80,18 +80,7 @@
 					<% end %>			
 				</div>
 				<div class="expanded-left">
-					<div class="expanded-field">
-						<div class="expanded-trlabel">Money</div>
-						<%= field "money", 'tr-item', {value: trainer["money"],  narc: "trdata", type: "int-255"} %>	
-					</div>
-					<div class="expanded-field">
-						<div class="expanded-trlabel">Reward</div>
-						<%= field "reward_item", 'tr-item', {value: trainer["reward_item"],  narc: "trdata", autofill: "items"} %>
-					</div>
-					<div class="expanded-field">
-						<div class="expanded-trlabel">Heal?</div>
-						<%= field "heal", 'tr-item', {value: trainer["heal"],  narc: "trdata", type: "int-1"} %>	
-					</div>
+
 				</div>
 				<div class="expanded-right" data-narc="trdata">
 					<% Trdata.ais.each do |ai| %>

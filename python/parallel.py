@@ -35,8 +35,8 @@ narc_info = {} ##store narc names and file id pairs
 with open(f'session_settings.json', "r") as outfile:  
 	narc_info = json.load(outfile) 
 
-narcs_to_output = ["trdata", "personal", "learnsets", "moves", "encounters", "evolutions"]
-narcs_to_output = ["personal", "learnsets", "moves", "evolutions", "trdata"]
+
+narcs_to_output = ["personal", "learnsets", "moves", "evolutions", "trdata", "encounters"]
 # narcs_to_output = ["overworlds"]
 # if narc_info["base_rom"] == "BW2":
 # 	narcs_to_output += ["grottos", "marts", "grotto_odds"]

@@ -12,7 +12,7 @@ import math
 
 
 def set_global_vars():
-	global ROM_NAME, NARC_FORMAT, POKEDEX, ITEMS, TRDATA, MOVES, GENDERS, NARC_PATH, ABILITIES, NATURES, STATUSES, FLAGS
+	global ROM_NAME, NARC_FORMAT, POKEDEX, ITEMS, TRDATA, MOVES, GENDERS, NARC_PATH, ABILITIES, NATURES, STATUSES, FLAGS, EXTRA_FLAGS, TYPES 
 	
 	with open(f'session_settings.json', "r") as outfile:  
 		settings = json.load(outfile) 
@@ -20,14 +20,15 @@ def set_global_vars():
 		NARC_FILE_ID = settings['trpok']
 		NARC_PATH = f'{ROM_NAME}/narcs/trpok-{NARC_FILE_ID}.narc'
 
-
+	TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fairy" "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"]
 	POKEDEX = open(f'texts/pokedex.txt', "r").read().splitlines()
 	ITEMS = open(f'texts/items.txt', mode="r").read().splitlines()
-	NATURES = open(f'texts/items.txt', mode="r").read().splitlines()
+	NATURES = open(f'texts/natures.txt', mode="r").read().splitlines()
 	MOVES = open(f'texts/moves.txt', mode="r").read().splitlines()
 	ABILITIES = open(f'texts/abilities.txt', mode="r").read().splitlines()
 	GENDERS = ['Default', "Male", "Female"]
-	FLAGS = ['Status', 'Hp', 'Atk', 'Def', 'Spd', 'Spatk', 'Spdef', 'Types', 'PP_Counts', 'Nickname']
+	FLAGS = ['status', 'hp', 'atk', 'def', 'spd', 'spatk', 'spdef', 'types', 'pp_counts', 'nickname']
+	EXTRA_FLAGS = ['status', 'hp', 'atk', 'def', 'spd', 'spatk', 'spdef', 'type_1', 'type_2', 'move_1_pp','move_2_pp','move_3_pp','move_4_pp', 'nickname']
 
 
 
@@ -43,7 +44,6 @@ def set_global_vars():
 	[2, "move_4"],
 	[2, "custom_ability"],
 	[2, "ball"],
-	[1, "padding"],
 	[1, "hp_iv"],
 	[1, "atk_iv"],
 	[1, "def_iv"],
@@ -59,7 +59,8 @@ def set_global_vars():
 	[1, "nature"],
 	[1, "shiny_lock"],
 	[4, "additional_flags"],
-	[1, "status"],
+	[4, "padding"],
+	[4, "status"],
 	[2, "hp"],
 	[2, "atk"],
 	[2, "def"],
@@ -112,6 +113,12 @@ def output_trpok_json(trpok_info):
 				for stat in ["hp", "atk", "def", "spd", "spatk", "spdef"]:
 					narc_format.remove([1, f'{stat}_{value_type}'])	
 		
+		print(trdata["set_nature"])
+
+
+
+
+
 		if trdata["set_nature"] != 1:			
 			narc_format.remove([1, "nature"])
 
@@ -122,6 +129,11 @@ def output_trpok_json(trpok_info):
 		
 		if trdata["additional_flags"] != 1:			
 			narc_format.remove([4, "additional_flags"])
+			narc_format.remove([4, "padding"])
+
+		# print(trdata)
+		print("NARC FORMAT ###############")
+		print(narc_format)
 
 		read_narc_data(data, narc_format, data_name, "trpok", template, num_pokemon, trdata)
 		data_index += 1
@@ -144,32 +156,40 @@ def read_narc_data(data, narc_format, file_name, narc_name, template, num_pokemo
 		additional_flags = {}
 		for entry in narc_format: 
 			skip_entry = False
-
+			flags_set = False
 			# remove unused additional fields if additional flags are used
 			if additional_flags != {}:
-				print(additional_flags)
-				for flag in FLAGS[0:8]:
+				
+				for flag in FLAGS[0:7]:
+					# print(additional_flags[flag])
+					# print(entry[1])
 					if additional_flags[flag] != 1:
-						if entry[1] == flag.lower():
+						if entry[1] == flag:
 							skip_entry = True
 
-				if additional_flags["Types"] != 1:
+				if additional_flags["types"] != 1:
 					if entry[1] == "type_1" or entry[1] == "type_2":
 						skip_entry = True
 
-				if additional_flags["PP_Counts"] != 1:
+				if additional_flags["pp_counts"] != 1:
 					if entry[1] == "move_1_pp" or entry[1] == "move_2_pp" or entry[1] == "move_3_pp" or entry[1] == "move_4_pp":
 						skip_entry = True
+			else:
+				# don't read additional flag data if no additional flags
+				if (entry[1] in EXTRA_FLAGS):
+					skip_entry = True
+
 
 			if not skip_entry:
 				entry_data = copy.deepcopy(read_bytes(stream, entry[0]))
+				# print(f'{entry[1]}_{n}')
+				# print(entry_data)
 				file["raw"][f'{entry[1]}_{n}'] = entry_data
 
 			# set additional flag data after reading additional flags
-			additional_flags = {}
 
 			if entry[1] == "additional_flags":
-				print(file["raw"][f'{entry[1]}_{n}'])
+				# print(file["raw"][f'{entry[1]}_{n}'])
 				index = 10
 				props = bin(entry_data)[2:].zfill(index) 
 				
@@ -177,6 +197,11 @@ def read_narc_data(data, narc_format, file_name, narc_name, template, num_pokemo
 					amount = int(props[index - 1])
 					additional_flags[prop] = amount
 					index -= 1
+
+
+
+			# print(additional_flags)
+
 
 	
 
@@ -194,23 +219,36 @@ def read_narc_data(data, narc_format, file_name, narc_name, template, num_pokemo
 
 def to_readable(raw, file_name, template, num_pokemon):
 	readable = copy.deepcopy(raw)
-
+	# print(raw)
 	readable["count"] = num_pokemon
 	for n in range(0, num_pokemon):
 		
-		readable[f'species_id_{n}'] = POKEDEX[raw[f'species_id_{n}']]
+		if (raw[f'species_id_{n}']) > 1024:
+			form = raw[f'species_id_{n}'] // 1024
+			base_form_id = raw[f'species_id_{n}'] - (1024 * form)
+			readable[f'species_id_{n}'] = POKEDEX[base_form_id]
+			readable[f'form_{n}'] = form
+		else:
+			readable[f'species_id_{n}'] = POKEDEX[(raw[f'species_id_{n}'])]
 		
 
 		if (f'custom_ability_{n}') in raw:
 			readable[f'custom_ability_{n}'] = ABILITIES[raw[f'custom_ability_{n}']]
 		
-		
+		if (f'nature_{n}') in raw:
+			readable[f'nature_{n}'] = NATURES[(raw[f'nature_{n}'])]
+
+
 		if (f'move_{1}_{0}') in raw:
 			for m in range(1,5):
 				readable[f'move_{m}_{n}'] = MOVES[raw[f'move_{m}_{n}']]
 
 		if (f'item_id_{n}') in raw:
 			readable[f'item_id_{n}'] = ITEMS[raw[f'item_id_{n}']]
+
+		for i in range(1,3):
+			if f"type_{i}" in raw:			
+				readable[f'type_{i}_{n}'] = TYPES[raw[f'type_{i}_{n}']]
 
 		
 		if (f"additional_flags_{n}") in raw:

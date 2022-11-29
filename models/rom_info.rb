@@ -101,7 +101,7 @@ class RomInfo
 
 	def self.class_names
 		names =[]
-		File.open("#{$rom_name}/texts/tr_classes.txt"){|f| f.read}.split("\n").each_with_index do |n, i|
+		File.open("texts/tr_classes.txt"){|f| f.read}.split("\n").each_with_index do |n, i|
 			names << "#{n} (#{i})"
 		end
 		names
