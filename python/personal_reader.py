@@ -22,8 +22,6 @@ def set_global_vars():
 		ROM_NAME = settings['rom_name']
 
 	TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"]
-	
-
 
 
 	EGG_GROUPS = ["~","Monster","Water 1","Bug","Flying","Field","Fairy","Grass","Human-Like","Water 3","Mineral","Amorphous","Water 2","Ditto","Dragon","Undiscovered"];
@@ -147,6 +145,7 @@ def to_readable(raw, file_name):
 
 	readable["ability_1"] = ABILITIES[raw["ability_1"]]
 	readable["ability_2"] = ABILITIES[raw["ability_2"]]
+	readable["ability_3"] = ABILITIES[0]
 
 
 	readable["form_sprites"] = "Default"

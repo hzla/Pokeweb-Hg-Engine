@@ -1038,7 +1038,7 @@ div.-active svg * {
     width: 33.33%;
 }
 
-.expanded-evos .expanded-field:nth-child(3n) {
+.expanded-evos .expanded-field:nth-child(4n) {
     margin-bottom: 20px;
 }
 

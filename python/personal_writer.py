@@ -7,7 +7,7 @@ import os
 import json
 import copy
 import sys
-import sprite_writer
+
 
 # code.interact(local=dict(globals(), **locals()))
 
@@ -20,12 +20,14 @@ with open(f'session_settings.json', "r") as outfile:
 	NARC_FILE_ID = settings["personal"]
 	ROM_NAME = settings['rom_name']
 
-TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark","Fairy"]
+TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"]
+
+
 EGG_GROUPS = ["~","Monster","Water 1","Bug","Flying","Field","Fairy","Grass","Human-Like","Water 3","Mineral","Amorphous","Water 2","Ditto","Dragon","Undiscovered"];
 GROWTHS = ["Medium Fast","Erratic","Fluctuating","Medium Slow","Fast","Slow","Medium Fast","Medium Fast"]
-ABILITIES = open(f'{ROM_NAME}/texts/abilities.txt', "r").read().splitlines() 
-ITEMS = open(f'{ROM_NAME}/texts/items.txt', mode="r").read().splitlines()
-POKEDEX = open(f'{ROM_NAME}/texts/pokedex.txt', "r").read().splitlines()
+ABILITIES = open(f'texts/abilities.txt', "r").read().splitlines() 
+ITEMS = open(f'texts/items.txt', mode="r").read().splitlines()
+POKEDEX = open(f'texts/pokedex.txt', "r").read().splitlines()
 
 PERSONAL_NARC_FORMAT = [[1, "base_hp"],
 [1,	"base_atk"],
@@ -36,11 +38,10 @@ PERSONAL_NARC_FORMAT = [[1, "base_hp"],
 [1,	"type_1"],
 [1,	"type_2"],
 [1,	"catchrate"],
-[1,	"stage"],
+[1,	"base_exp"],
 [2,	"evs"],
 [2,	"item_1"],
 [2,	"item_2"],
-[2,	"item_3"],
 [1,	"gender"],
 [1,	"hatch_cycle"],
 [1,	"base_happy"],
@@ -49,20 +50,12 @@ PERSONAL_NARC_FORMAT = [[1, "base_hp"],
 [1,	"egg_group_2"],
 [1,	"ability_1"],
 [1,	"ability_2"],
-[1,	"ability_3"],
 [1,	"flee"],
-[2,	"form_id"],
-[2,	"form"],
-[1,	"num_forms"],
-[1,	"color"],
-[2,	"base_exp"],
-[2,	"height"],
-[2,	"weight"],
+[3,	"color"],
 [4, "tm_1-32"],
 [4, "tm_33-64"],
 [4, "tm_65-95+hm_1"],
-[4, "hm_2-6"],
-[1, "tutors"]]
+[4, "hm_2-6"]]
 
 #################################################################
 
@@ -122,19 +115,17 @@ def write_readable_to_raw(file_name):
 		if personal_data["readable"] is None:
 			return
 
-		new_raw_data = to_raw(personal_data["readable"])
+		new_raw_data = to_raw(personal_data["readable"], file_name)
 		personal_data["raw"] = new_raw_data
 
-		if personal_data["raw"]["form_sprites"] != "Default" and personal_data["raw"]["form"] != 0:
-			print("updating sprites")
-			sprite_writer.write_sprite_to_index(personal_data["raw"]["form_sprites"], personal_data["raw"]["form"])
+		
 
 	with open(f'{ROM_NAME}/json/personal/{file_name}.json', "w", encoding='ISO8859-1') as outfile: 
 		json.dump(personal_data, outfile)
 
 
 
-def to_raw(readable):
+def to_raw(readable, file_name):
 	raw = copy.deepcopy(readable)
 
 	## input validation is done on the client side with javascript 
@@ -144,15 +135,13 @@ def to_raw(readable):
 
 	item_1 = readable["item_1"].encode("latin_1").decode("utf_8")
 	item_2 = readable["item_2"].encode("latin_1").decode("utf_8")
-	item_3 = readable["item_3"].encode("latin_1").decode("utf_8")
+
 
 	readable["item_1"] = item_1
 	readable["item_2"] = item_2
-	readable["item_3"] = item_3
 
 	raw["item_1"] = ITEMS.index(item_1)
 	raw["item_2"] = ITEMS.index(item_2)
-	raw["item_3"] = ITEMS.index(item_3)
 
 	raw["exp_rate"] = GROWTHS.index(raw["exp_rate"])
 
@@ -162,7 +151,19 @@ def to_raw(readable):
 	# abilities are stored uppercase in text bank
 	raw["ability_1"] = ABILITIES.index(raw["ability_1"].upper())
 	raw["ability_2"] = ABILITIES.index(raw["ability_2"].upper())
-	raw["ability_3"] = ABILITIES.index(raw["ability_3"].upper())
+	
+	# update hidden abilities file
+	hidden_abilities = {}
+	
+	with open(f'{ROM_NAME}/json/abilities/hidden_abilities.json', "r", encoding='ISO8859-1') as outfile:  	
+		hidden_abilities = json.load(outfile)
+	
+
+	hidden_abilities["raw"][str(file_name)] = ABILITIES.index(raw["ability_3"].upper())
+	hidden_abilities["readable"][str(file_name)] = readable["ability_3"]
+	
+	with open(f'{ROM_NAME}/json/abilities/hidden_abilities.json', "w", encoding='ISO8859-1') as outfile: 
+		json.dump(hidden_abilities, outfile)
 
 	bin_ev = "0000"
 

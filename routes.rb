@@ -40,7 +40,7 @@ end
 
 get '/' do
 	if $rom_name
-		redirect "/headers"
+		redirect "/personal"
 	else
 		@roms = Dir["*.nds"]
 		@projects = Dir['projects/*/']

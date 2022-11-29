@@ -21,7 +21,9 @@ with open(f'session_settings.json', "r") as outfile:
 	NARC_FILE_ID = settings["learnsets"]
 	ROM_NAME = settings['rom_name']
 
-MOVES = open(f'{ROM_NAME}/texts/moves.txt', mode="r").read().splitlines()
+TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark","Fairy"]
+
+MOVES = open(f'texts/moves.txt', mode="r").read().splitlines()
 
 for i,move in enumerate(MOVES):
 	MOVES[i] = re.sub(r'[^A-Za-z0-9 \-]+', '', move)

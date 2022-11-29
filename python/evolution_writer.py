@@ -20,9 +20,9 @@ def set_global_vars():
 		ROM_NAME = settings['rom_name']
 		NARC_FILE_ID = settings["evolutions"]
 
-	ITEMS = open(f'{ROM_NAME}/texts/items.txt', mode="r").read().splitlines()
-	POKEDEX = open(f'{ROM_NAME}/texts/pokedex.txt', "r").read().splitlines()
-	MOVES = open(f'{ROM_NAME}/texts/moves.txt', mode="r").read().splitlines()
+	ITEMS = open(f'texts/items.txt', mode="r").read().splitlines()
+	POKEDEX = open(f'texts/pokedex.txt', "r").read().splitlines()
+	MOVES = open(f'texts/moves.txt', mode="r").read().splitlines()
 
 	METHODS = open(f'Reference_Files/evo_methods.txt', mode="r").read().splitlines()	
 
@@ -100,14 +100,15 @@ def to_raw(readable):
 	for n in range(0,7):
 		
 		raw[f'method_{n}'] = METHODS.index(readable[f'method_{n}'])
-		raw[f'target_{n}'] = POKEDEX.index(readable[f'target_{n}'].upper())
+		raw[f'target_{n}'] = ((raw[f'target_form_{n}'] - 1) << 10 | POKEDEX.index(readable[f'target_{n}']))
 
-		if raw[f'method_{n}'] in [6,8,17,18,19,20]:
+
+		if raw[f'method_{n}'] in [6,7,16,17,18,19]:
 			raw[f'param_{n}'] = ITEMS.index(raw[f'param_{n}'])
+		elif raw[f'method_{n}'] == 20:
+			raw[f'param_{n}'] = MOVES.index(readable[f'param_{n}'])
 		elif raw[f'method_{n}'] == 21:
-			raw[f'param_{n}'] = MOVES.index(readable[f'param_{n}'].upper())
-		elif raw[f'method_{n}'] == 22:
-			raw[f'param_{n}'] = POKEDEX.index(readable[f'param_{n}'].upper())
+			raw[f'param_{n}'] = POKEDEX.index(readable[f'param_{n}'])
 		else:
 			raw
 

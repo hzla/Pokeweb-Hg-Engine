@@ -63,7 +63,7 @@ class Personal
 		taken_slots.sort_by {|p| p[0]}
 	end
 
-	def self.get_data_for(file_name, hidden_abilities)
+	def self.get_data_for(file_name, hidden_abilities=nil)
 		pok_id = file_name.split('/')[-1].split('.')[0]
 
 		personal_data = JSON.parse(File.open(file_name, "r"){|f| f.read})["readable"]
@@ -72,8 +72,11 @@ class Personal
 		learnset_data_path = "#{$rom_name}/json/learnsets/#{pok_id}.json"
 		learnset_data = JSON.parse(File.open(learnset_data_path, "r"){|f| f.read})["readable"]
 
+		if hidden_abilities
+			personal_data["ability_3"] = hidden_abilities[pok_id.to_s]
+		end
 		personal_data["learnset"] = learnset_data
-		personal_data["ability_3"] = hidden_abilities[pok_id.to_s]
+		
 		personal_data		
 	end
 
