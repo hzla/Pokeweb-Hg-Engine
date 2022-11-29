@@ -28,19 +28,20 @@
 		</div>
 	</div>
 
-	<% (1..@header_data["count"]).each do |n| %>
+	<% (0..@header_data["count"] - 1).each do |n| %>
 		<div class="expanded-field filterable" data-index="<%= n %>">
 			<div class="expanded-field-main">
 				<div class="hdr-id"><%= n %></div>
+				<% p @header_data[n.to_s] %>
 				<%= field 'location_name', 'hdr-location', {value: @header_data[n.to_s]["location_name"],  narc: "header", autofill: "location_names"} %>
 
-				<%= field 'matrix_id', 'hdr-matrix', {value: @header_data[n.to_s]["matrix_id"],  narc: "header", type: "int-65535"} %>
+				<%= field 'matrix', 'hdr-matrix', {value: @header_data[n.to_s]["matrix"],  narc: "header", type: "int-65535"} %>
 
-				<%= field 'script_id', 'hdr-script', {value: @header_data[n.to_s]["script_id"],  narc: "header", type: "int-65535"} %>
+				<%= field 'script', 'hdr-script', {value: @header_data[n.to_s]["script"],  narc: "header", type: "int-65535"} %>
 
-				<%= field 'text_bank_id', 'hdr-texts', {value: @header_data[n.to_s]["text_bank_id"],  narc: "header", type: "int-65535"} %>
+				<%= field 'text_bank', 'hdr-texts', {value: @header_data[n.to_s]["text_bank"],  narc: "header", type: "int-65535"} %>
 
-				<%= field 'encounter_id', 'hdr-encounters', {value: @header_data[n.to_s]["encounter_id"],  narc: "header", type: "int-65535"} %>
+				<%= field 'encounter', 'hdr-encounters', {value: @header_data[n.to_s]["encounter"],  narc: "header", type: "int-65535"} %>
 
 				<%= svg "svgs/misc_data", 'move-info expand-action expand-header svg no-fill', ["expand", "header"] %>
 			</div>

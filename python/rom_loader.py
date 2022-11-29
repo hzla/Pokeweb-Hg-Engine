@@ -12,6 +12,7 @@ import msg_reader
 from multiprocessing import Pool
 import subprocess
 from arm9_reader import output_tms_json
+from header_reader import output_headers_json
 
 from pathlib import Path
 import shutil
@@ -301,8 +302,10 @@ with open(f'session_settings.json', "w+") as outfile:
 #############################################################
 ####################CONVERT TO JSON #########################
 
+output_headers_json(arm9)
 
 os.system("python python/parallel.py")
 
 output_tms_json(arm9)
+
 

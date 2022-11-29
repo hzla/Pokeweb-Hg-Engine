@@ -16,7 +16,7 @@ class Encounter < Pokenarc
 
 	def self.write_data data, batch=false
 		@@narc_name = "encounters"
-		@@upcases = "all"
+		@@upcases = []
 		super
 	end
 

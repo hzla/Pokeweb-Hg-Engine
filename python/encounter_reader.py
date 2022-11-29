@@ -97,9 +97,6 @@ def to_readable(raw, file_name):
 	method_counts = [5,2,5,5,5]
 	for idx, method in enumerate(["surf", "rock_smash", "old_rod", "good_rod", "super_rod"]):
 		for n in range(0, method_counts[idx]):
-			ENCOUNTER_NARC_FORMAT.append([1, f'{method}_{n}_min_lvl'])
-			ENCOUNTER_NARC_FORMAT.append([1, f'{method}_{n}_max_lvl'])
-			
 			mondata = get_form(raw[f'{method}_{n}_species_id'])
 			readable[f'{method}_{n}_species_id'] = POKEDEX[mondata[1]]
 			readable[f'{method}_{n}_species_form'] = mondata[0]

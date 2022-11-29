@@ -17,62 +17,45 @@ with open(f'session_settings.json', "r") as outfile:
 	settings = json.load(outfile) 
 	ROM_NAME = settings['rom_name']
 	NARC_FILE_ID = settings["moves"]
-	ANIMATION_ID = settings["move_animations"]
-	B_ANIMATION_ID = settings["battle_animations"]
+	# ANIMATION_ID = settings["move_animations"]
+	# B_ANIMATION_ID = settings["battle_animations"]
 
-TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark","Fairy"]
-
+TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"]
 CATEGORIES = ["Status","Physical","Special"]
 
 EFFECT_CATEGORIES = ["No Special Effect", "Status Inflicting","Target Stat Changing","Healing","Chance to Inflict Status","Raising Target's Stat along Attack", "Lowering Target's Stat along Attack","Raise user stats","Lifesteal","OHKO","Weather","Safeguard", "Force Switch Out", "Unique Effect"]
 
-EFFECTS = open(f'Reference_Files/effects.txt', "r").read().splitlines() 
+EFFECTS = open(f'texts/effects.txt', "r").read().splitlines() 
 
 STATUSES = ["None","Visible","Temporary","Infatuation", "Trapped"]
 
-TARGETS = ["Any adjacent","Random (User/ Adjacent ally)","Random adjacent ally","Any adjacent opponent","All excluding user","All adjacent opponents","User's party","User","Entire Field","Random adjacent opponent","Field Itself","Opponent's side of field","User's side of field","User (Selects target automatically)"]
+TARGETS = ["Selected", "Depends", "Random", "Both", "Foes And Ally", "User", "User Side", "Active Field", "Opponents_Field", "Ally", "Acupressure", "Me First"]
 
 STATS = ["None", "Attack", "Defense", "Special Attack", "Special Defense", "Speed", "Accuracy", "Evasion", "All" ]
 
-PROPERTIES = ["contact","requires_charge","recharge_turn","blocked_by_protect","reflected_by_magic_coat","stolen_by_snatch","copied_by_mirror_move","punch_move","sound_move","grounded_by_gravity","defrosts_targets","hits_non-adjacent_opponents","healing_move","hits_through_substitute"]
+PROPERTIES = ["contact","blocked_by_protect","reflected_by_magic_coat","stolen_by_snatch","copied_by_mirror_move","kings_rock","keep_hp_bar","hide_shadow"]
 
-MOVE_NAMES = open(f'{ROM_NAME}/texts/moves.txt', mode="r").read().splitlines()
+MOVE_NAMES = open(f'texts/moves.txt', mode="r").read().splitlines()
 
 for i,move in enumerate(MOVE_NAMES):
 	MOVE_NAMES[i] = re.sub(r'[^A-Za-z0-9 \-]+', '', move)
 
+
 RESULT_EFFECTS = open(f'Reference_Files/result_effects.txt', "r").read().splitlines()
 
-MOVES_NARC_FORMAT = [[1, "type"],
-[1,	"effect_category"],
-[1,	"category"],
-[1,	"power"],
-[1,	"accuracy"],
-[1,	"pp"],
-[1,	"priority"],
-[1,	"hits"],
-[2,	"result_effect"],
-[1,	"effect_chance"],
-[1,	"status"],
-[1,	"min_turns"],
-[1,	"max_turns"],
-[1,	"crit"],
-[1,	"flinch"],
-[2,	"effect"],
-[1,	"recoil"],
-[1,	"healing"],
-[1,	"target"],
-[1,	"stat_1"],
-[1,	"stat_2"],
-[1,	"stat_3"],
-[1,	"magnitude_1"],
-[1,	"magnitude_2"],
-[1,	"magnitude_3"],
-[1,	"stat_chance_1"],
-[1,	"stat_chance_2"],
-[1,	"stat_chance_3"],
-[2,	"flag"], ## Flag is always 53 53
-[2,	"properties"]]
+MOVES_NARC_FORMAT = [
+[2, "effect"],
+[1, "category"],
+[1, "power"],
+[1, 'type'],
+[1, "accuracy"],
+[1, "pp"],
+[1, "effect_chance"],
+[2, "target"],
+[1, "priority"],
+[1, "properties"],
+[1, "contest_effect"],
+[1, "contest_type"]]
 
 #################################################################
 
@@ -135,45 +118,11 @@ def to_raw(readable):
 
 	raw["type"] = TYPES.index(readable["type"].lower().capitalize())
 
-	raw["effect_category"] = EFFECT_CATEGORIES.index(readable["effect_category"])
 	
 	raw["category"] = CATEGORIES.index(readable["category"].lower().capitalize())
-
-	#special case for tri attack
-	if readable["result_effect"] == "Chance of either Paralyzing; Burning; or Freezing target":
-		raw["result_effect"] = 65535
-	else:
-	
-		raw["result_effect"] = RESULT_EFFECTS.index(raw["result_effect"].lower().capitalize())
-
 	# code.interact(local=dict(globals(), **locals()))
 	raw["effect"] = EFFECTS.index(raw["effect"])
 
-	raw["status"] = STATUSES.index(raw["status"])
-
-	if readable["recoil"] > 0:
-		raw["recoil"] = 256 - readable["recoil"]
-
-	raw["target"] = TARGETS.index(raw["target"])
-
-	raw["stat_1"] = STATS.index(readable["stat_1"])
-	raw["stat_2"] = STATS.index(readable["stat_2"])
-	raw["stat_3"] = STATS.index(readable["stat_3"])
-
-	if readable["magnitude_1"] < 0:
-		raw["magnitude_1"] = readable["magnitude_1"] + 256
-
-	if readable["magnitude_2"] < 0:
-		raw["magnitude_2"] = readable["magnitude_2"] + 256
-
-	if readable["magnitude_3"] < 0:
-		raw["magnitude_3"] = readable["magnitude_3"] + 256
-
-	binary_hits = ""
-	hits = ["max_hits", "min_hits"]
-	for hit in hits:
-		binary_hits += bin(readable[hit])[2:].zfill(4)
-	raw["hits"] = int(binary_hits, 2)
 
 	binary_props = ""
 	PROPERTIES.reverse()
@@ -183,29 +132,29 @@ def to_raw(readable):
 	raw["properties"] = int(binary_props, 2)
 
 
-	# set animation
-	animations_file_path = f'{ROM_NAME}/narcs/move_animations-{ANIMATION_ID}.narc'
-	b_animations_file_path = f'{ROM_NAME}/narcs/battle_animations-{B_ANIMATION_ID}.narc'
+	# # set animation
+	# animations_file_path = f'{ROM_NAME}/narcs/move_animations-{ANIMATION_ID}.narc'
+	# b_animations_file_path = f'{ROM_NAME}/narcs/battle_animations-{B_ANIMATION_ID}.narc'
 
-	# for non expanded moves
-	print(readable["index"])
-	if readable["index"] < 673:
-		print("no exp")
-		animations = ndspy.narc.NARC.fromFile(animations_file_path)
-		print(readable["index"])
-		animations.files[readable["index"]] = animations.files[readable["animation"]]
-		# code.interact(local=dict(globals(), **locals()))
-		with open(animations_file_path, 'wb') as f:
-			f.write(animations.save())
+	# # for non expanded moves
+	# print(readable["index"])
+	# if readable["index"] < 673:
+	# 	print("no exp")
+	# 	animations = ndspy.narc.NARC.fromFile(animations_file_path)
+	# 	print(readable["index"])
+	# 	animations.files[readable["index"]] = animations.files[readable["animation"]]
+	# 	# code.interact(local=dict(globals(), **locals()))
+	# 	with open(animations_file_path, 'wb') as f:
+	# 		f.write(animations.save())
 
-	else: # for expanded moves
-		print("exp")
-		animations = ndspy.narc.NARC.fromFile(animations_file_path)
-		b_animations = ndspy.narc.NARC.fromFile(b_animations_file_path)
-		# code.interact(local=dict(globals(), **locals()))
-		b_animations.files[readable["index"] - 561] = animations.files[readable["animation"]]
-		with open(b_animations_file_path, 'wb') as f:
-			f.write(b_animations.save())
+	# else: # for expanded moves
+	# 	print("exp")
+	# 	animations = ndspy.narc.NARC.fromFile(animations_file_path)
+	# 	b_animations = ndspy.narc.NARC.fromFile(b_animations_file_path)
+	# 	# code.interact(local=dict(globals(), **locals()))
+	# 	b_animations.files[readable["index"] - 561] = animations.files[readable["animation"]]
+	# 	with open(b_animations_file_path, 'wb') as f:
+	# 		f.write(b_animations.save())
 
 	return raw
 	

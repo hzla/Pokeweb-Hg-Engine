@@ -20,29 +20,14 @@ def set_global_vars():
 		ROM_NAME = settings['rom_name']
 		NARC_FILE_ID = settings['trdata']
 
-	TEMPLATE_FLAGS =["has_moves", "has_items"]
-	TRAINER_CLASSES = open(f'{ROM_NAME}/texts/tr_classes.txt', "r").read().splitlines()
+	TEMPLATE_FLAGS =["has_moves", "has_items", "set_abilities", "set_ball", "set_iv_ev", "set_nature", "shiny_lock", "additional_flags"]
 
+	TRAINER_CLASSES = open(f'texts/tr_classes.txt', "r").read().splitlines()
+	TRAINER_NAMES = open(f'texts/tr_names.txt', "r").read().splitlines()
+	ITEMS = open(f'texts/items.txt', mode="r").read().splitlines()
+	BATTLE_TYPES = ["Singles", "Doubles"]
 
-	TRAINER_NAMES = open(f'Reference_Files/trainer_names.txt', "r").read().splitlines()
-
-	customTnames = f'Reference_Files/trainer_names_{ROM_NAME.split("/")[-1]}.txt'
-	customTclasses = f'Reference_Files/trainer_classes_{ROM_NAME.split("/")[-1]}.txt'
-
-	print("searching for the following custom trainer names/classes files")
-	print(customTclasses)
-	print(customTnames)
-
-	if os.path.isfile(customTnames) and os.path.isfile(customTclasses):
-		print("custom detected")
-		TRAINER_CLASSES = open(customTclasses, "r").read().splitlines()
-		TRAINER_NAMES = open(customTnames, "r").read().splitlines()
-	else:
-		print("no custom names/classes found")
-
-	ITEMS = open(f'{ROM_NAME}/texts/items.txt', mode="r").read().splitlines()
-
-	BATTLE_TYPES = ["Singles", "Doubles", "Triples", "Rotation"]
+	TRPOK_INFO = []
 
 	AIS = ["Prioritize Effectiveness",
 	"Evaluate Attacks",
@@ -61,16 +46,14 @@ def set_global_vars():
 
 	NARC_FORMAT = [[1, "template"],
 	[1, "class"],
-	[1, "battle_type_1"],
+	[1, "battle_type"],
 	[1, "num_pokemon"],
 	[2, "item_1"],
 	[2, "item_2"],
 	[2, "item_3"],
 	[2, "item_4"],
 	[4, "ai"],
-	[1, "heal"],
-	[1, "money"],
-	[2, "reward_item"]]
+	[1, "battle_type_2"]]
 
 set_global_vars()
 #################################################################
@@ -142,8 +125,7 @@ def to_raw(readable):
 
 	
 
-	raw["reward_item"] = ITEMS.index(raw["reward_item"])
-	raw["battle_type_1"] = BATTLE_TYPES.index(raw["battle_type_1"])
+	raw["battle_type"] = BATTLE_TYPES.index(raw["battle_type"])
 
 	for n in range(1, 5):
 		raw[f'item_{n}'] = ITEMS.index(raw[f'item_{n}'])

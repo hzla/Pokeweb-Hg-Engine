@@ -675,7 +675,7 @@ $(document).ready(function() {
 		card.find(".wild").remove()
 		
 		$.each(unique_encs, function(i,v) {
-			if (v != "") {
+			if ((v != "") && (v != "1") && (v != "-----"))  {
 				var sprite = "<div class='wild'><img src='/images/pokesprite/" + v + ".png'></div>"
 				card.find(".encounter-wilds, .grotto-wilds").append(sprite)
 			}		

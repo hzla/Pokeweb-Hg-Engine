@@ -21,52 +21,64 @@ def set_global_vars():
 		NARC_FILE_ID = settings["trpok"]
 
 
-	POKEDEX = open(f'{ROM_NAME}/texts/pokedex.txt', "r").read().splitlines()
-	ITEMS = open(f'{ROM_NAME}/texts/items.txt', mode="r").read().splitlines()
-
-	MOVES = open(f'{ROM_NAME}/texts/moves.txt', mode="r").read().splitlines()
-
+	TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"]
+	POKEDEX = open(f'texts/pokedex.txt', "r").read().splitlines()
+	ITEMS = open(f'texts/items.txt', mode="r").read().splitlines()
+	NATURES = open(f'texts/natures.txt', mode="r").read().splitlines()
+	MOVES = open(f'texts/moves.txt', mode="r").read().splitlines()
+	ABILITIES = open(f'texts/abilities.txt', mode="r").read().splitlines()
 	GENDERS = ['Default', "Male", "Female"]
+	FLAGS = ['status', 'hp', 'atk', 'def', 'spd', 'spatk', 'spdef', 'types', 'pp_counts', 'nickname']
+	EXTRA_FLAGS = ['status', 'hp', 'atk', 'def', 'spd', 'spatk', 'spdef', 'type_1', 'type_2', 'move_1_pp','move_2_pp','move_3_pp','move_4_pp', 'nickname']
 
-	NARC_FORMAT_0 = [[1, "ivs"],
-	[1, "ability"],
-	[1, "level"],
-	[1, "padding"],
-	[2, "species_id"],
-	[2, "form"]]
 
-	NARC_FORMAT_1 = [[1, "ivs"],
-	[1, "ability"],
-	[1, "level"],
-	[1, "padding"],
-	[2, "species_id"],
-	[2, "form"],
-	[2, "move_1"],
-	[2, "move_2"],
-	[2, "move_3"],
-	[2, "move_4"]]
 
-	NARC_FORMAT_2 = [[1, "ivs"],
-	[1, "ability"],
-	[1, "level"],
-	[1, "padding"],
-	[2, "species_id"],
-	[2, "form"],
-	[2, "item_id"]]
 
-	NARC_FORMAT_3 = [[1, "ivs"],
+	NARC_FORMAT = [[1, "ivs"],
 	[1, "ability"],
-	[1, "level"],
-	[1, "padding"],
+	[2, "level"],
 	[2, "species_id"],
-	[2, "form"],
 	[2, "item_id"],
 	[2, "move_1"],
 	[2, "move_2"],
 	[2, "move_3"],
-	[2, "move_4"]]
+	[2, "move_4"],
+	[2, "custom_ability"],
+	[2, "ball"],
+	[1, "hp_iv"],
+	[1, "atk_iv"],
+	[1, "def_iv"],
+	[1, "spd_iv"],
+	[1, "spatk_iv"],
+	[1, "spdef_iv"],
+	[1, "hp_ev"],
+	[1, "atk_ev"],
+	[1, "def_ev"],
+	[1, "spd_ev"],
+	[1, "spatk_ev"],
+	[1, "spdef_ev"],
+	[1, "nature"],
+	[1, "shiny_lock"],
+	[4, "additional_flags"],
+	[4, "padding"],
+	[4, "status"],
+	[2, "hp"],
+	[2, "atk"],
+	[2, "def"],
+	[2, "spd"],
+	[2, "spatk"],
+	[2, "spdef"],
+	[1, "type_1"],
+	[1, "type_2"],
+	[1, "move_1_pp"],
+	[1, "move_2_pp"],
+	[1, "move_3_pp"],
+	[1, "move_4_pp"]]
 
-	NARC_FORMATS = [NARC_FORMAT_0,NARC_FORMAT_1,NARC_FORMAT_2,NARC_FORMAT_3]
+	# for n in range(0,11):
+	# 	NARC_FORMAT.append([2, f'nickname_{n}'])
+
+	NARC_FORMAT.append([2, 'ballseal'])
 
 set_global_vars()
 #################################################################

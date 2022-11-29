@@ -31,8 +31,6 @@ def set_global_vars():
 	EXTRA_FLAGS = ['status', 'hp', 'atk', 'def', 'spd', 'spatk', 'spdef', 'type_1', 'type_2', 'move_1_pp','move_2_pp','move_3_pp','move_4_pp', 'nickname']
 
 
-
-
 	NARC_FORMAT = [[1, "ivs"],
 	[1, "ability"],
 	[2, "level"],
@@ -86,7 +84,6 @@ def output_trpok_json(trpok_info):
 	data_index = 0
 	narc = ndspy.narc.NARC.fromFile(NARC_PATH)
 
-	print("triggered#####")
 	for data in narc.files:	
 		data_name = data_index
 		template = trpok_info[data_index][0]
@@ -113,11 +110,6 @@ def output_trpok_json(trpok_info):
 				for stat in ["hp", "atk", "def", "spd", "spatk", "spdef"]:
 					narc_format.remove([1, f'{stat}_{value_type}'])	
 		
-		print(trdata["set_nature"])
-
-
-
-
 
 		if trdata["set_nature"] != 1:			
 			narc_format.remove([1, "nature"])

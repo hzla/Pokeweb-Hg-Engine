@@ -7,7 +7,7 @@ class Header
 	end
 
 	def self.location_names
-		file_path = "#{$rom_name}/texts/locations.txt"
+		file_path = "texts/locations.txt"
 		data = File.open(file_path, "r:ISO8859-1"){|f| f.read}.split("\n").uniq
 	end
 
@@ -63,9 +63,9 @@ class Header
 	end
 
 	def self.expanded_fields
-		col_1 = [[255, "map_type"], [255, "weather_id"], [65535, "map_id"], [65535, "parent_map_id"], [65535, "texture_id"], [65535, "level_script_id"]]
-		col_2 = [[255, "name_style_id" ], [65535, "name_icon"], [255, "camera_id"], [255, "flags"], [4294967296, "fly_x"], [4294967296, "fly_y"], [4294967296, "fly_z"]]
-		col_3 = [[65535, "music_spring_id"], [65535,"music_summer_id"], [65535,"music_fall_id"], [65535,"music_winter_id"], [255,"unknown_1"], [255,"unknown_2"], [65535,"unknown_3"], [65535,"unknown_4"]]
+		col_1 = [[65535, "event"], [255, "texture_1"],[255, "texture_2"], [65535, "level_script_id"]]
+		col_2 = [[255, "name_style" ], [255, "camera"], [255, "flags"], [255, "follow_mode"]]
+		col_3 = [[65535, "music_day"], [65535,"music_night"], [255,"unknown"]]
 		[col_1,col_2,col_3]
 	end
 

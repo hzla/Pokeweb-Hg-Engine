@@ -20,38 +20,34 @@ def set_global_vars():
 		ROM_NAME = settings['rom_name']
 		NARC_FILE_ID = settings["encounters"]
 
-	LOCATIONS = open(f'{ROM_NAME}/texts/locations.txt', mode="r" ,encoding='utf-8').read().splitlines()
+	POKEDEX = open(f'texts/pokedex.txt', "r").read().splitlines()
 
-	POKEDEX = open(f'{ROM_NAME}/texts/pokedex.txt', "r").read().splitlines()
+	ENCOUNTER_NARC_FORMAT = [
+	[1, "walking_rate"],
+	[1, "surf_rate"],
+	[1, "rock_smash_rate"],
+	[1, "old_rod_rate"],
+	[1, "good_rod_rate"],
+	[1, "super_rod_rate"],
+	[2, "padding"]]
 
-	NARC_FORMAT = []
+	for n in range(0,12):
+		ENCOUNTER_NARC_FORMAT.append([1, f'walking_{n}_level'])
 
-	seasons = ["spring", "summer", "fall", "winter"]
+	for time in ["morning", "day", "night"]:
+		for n in range(0,12):
+			ENCOUNTER_NARC_FORMAT.append([2, f'{time}_{n}_species_id'])
 
-	for season in seasons:
-		s_encounters = [[1,f'{season}_grass_rate'],
-		[1, f'{season}_grass_doubles_rate'],
-		[1, f'{season}_grass_special_rate'],
-		[1, f'{season}_surf_rate'],
-		[1, f'{season}_surf_special_rate'],
-		[1, f'{season}_super_rod_rate'],
-		[1, f'{season}_super_rod_special_rate'],
-		[1, f'{season}_blank']]
+	for region in ["hoenn", "sinnoh"]:
+		for n in range(0,2):
+			ENCOUNTER_NARC_FORMAT.append([2, f'{region}_{n}_species_id'])
 
-		for enc_type in ["grass", "grass_doubles", "grass_special"]:
-			for n in range(0,12):
-				s_encounters.append([2, f'{season}_{enc_type}_slot_{n}'])
-				s_encounters.append([1, f'{season}_{enc_type}_slot_{n}_min_level'])
-				s_encounters.append([1, f'{season}_{enc_type}_slot_{n}_max_level'])
-
-		for wat_enc_type in ["surf", "surf_special", "super_rod" , "super_rod_special"]:
-			for n in range(0,5):
-				s_encounters.append([2, f'{season}_{wat_enc_type}_slot_{n}'])
-				s_encounters.append([1, f'{season}_{wat_enc_type}_slot_{n}_min_level'])
-				s_encounters.append([1, f'{season}_{wat_enc_type}_slot_{n}_max_level'])
-
-		for entry in s_encounters:
-			NARC_FORMAT.append(entry)
+	method_counts = [5,2,5,5,5]
+	for idx, method in enumerate(["surf", "rock_smash", "old_rod", "good_rod", "super_rod"]):
+		for n in range(0, method_counts[idx]):
+			ENCOUNTER_NARC_FORMAT.append([1, f'{method}_{n}_min_lvl'])
+			ENCOUNTER_NARC_FORMAT.append([1, f'{method}_{n}_max_lvl'])
+			ENCOUNTER_NARC_FORMAT.append([2, f'{method}_{n}_species_id'])
 
 set_global_vars()
 #################################################################
@@ -118,27 +114,19 @@ def write_readable_to_raw(file_name, narc_name="encounters"):
 def to_raw(readable):
 	raw = copy.deepcopy(readable)
 
-	for season in ["spring", "summer", "fall", "winter"]:
+	for time in ["morning", "day", "night"]:
+		for n in range(0,12):
+			raw[f'{time}_{n}_species_id'] = ((readable[f'{time}_{n}_species_form'] - 1) << 10 | POKEDEX.index(readable[f'{time}_{n}_species_id']))
 
-		for enc_type in ["grass", "grass_doubles", "grass_special"]:
-			for n in range(0,12):
-				index = POKEDEX.index(readable[f'{season}_{enc_type}_slot_{n}'])
-				
-				raw[f'{season}_{enc_type}_slot_{n}'] = index
 
-				alt_form = f'{season}_{enc_type}_slot_{n}_form' in readable
-				if alt_form:
-					raw[f'{season}_{enc_type}_slot_{n}'] += (int(readable[f'{season}_{enc_type}_slot_{n}_form']) * 2048)
-		
-		for enc_type in ["surf", "surf_special", "super_rod" , "super_rod_special"]:
-			for n in range(0,5):
-				index = POKEDEX.index(readable[f'{season}_{enc_type}_slot_{n}'])
-				
-				raw[f'{season}_{enc_type}_slot_{n}'] = index
-				
-				alt_form = f'{season}_{enc_type}_slot_{n}_form' in readable
-				if alt_form:
-					raw[f'{season}_{enc_type}_slot_{n}'] += (int(readable[f'{season}_{enc_type}_slot_{n}_form']) * 2048)
+	for region in ["hoenn", "sinnoh"]:
+		for n in range(0,2):
+			raw[f'{region}_{n}_species_id'] = ((readable[f'{region}_{n}_species_form'] - 1) << 10 | POKEDEX.index(readable[f'{region}_{n}_species_id']))
+
+	method_counts = [5,2,5,5,5]
+	for idx, method in enumerate(["surf", "rock_smash", "old_rod", "good_rod", "super_rod"]):
+		for n in range(0, method_counts[idx]):
+			raw[f'{method}_{n}_species_id'] = ((readable[f'{method}_{n}_species_form'] - 1) << 10 | POKEDEX.index(readable[f'{method}_{n}_species_id']))
 
 	return raw
 	
@@ -146,8 +134,6 @@ def to_raw(readable):
 def write_bytes(stream, n, data):
 	stream += (int(data).to_bytes(n, 'little'))		
 	return stream
-
-
 
 ################ If run with arguments #############
 

@@ -35,9 +35,7 @@ with open(f'session_settings.json', "r") as outfile:
 
 
 narcs_to_output = ["personal", "learnsets", "moves", "evolutions", "trdata", "encounters", "hidden_abilities"]
-# narcs_to_output = ["overworlds"]
-# if narc_info["base_rom"] == "BW2":
-# 	narcs_to_output += ["grottos", "marts", "grotto_odds"]
+
 
 
 rom_name = narc_info["rom_name"]

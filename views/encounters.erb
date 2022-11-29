@@ -70,7 +70,7 @@
 
 									<%= field "walking_#{n}_level", 'enc-lvl', {value: enc["walking_#{n}_level"],  narc: "encounter", type: "int-100"} %>
 
-									<%= field "#{field}_#{n}_species_form", 'enc-slot enc-name', {value: enc[ "#{field}_#{n}_species_form"],  narc: "encounter", type: "int-31"} %>								
+									<%= field "#{field}_#{n}_species_form", 'enc-form', {value: enc[ "#{field}_#{n}_species_form"],  narc: "encounter", type: "int-31"} %>								
 									<div class="enc-percent"><%= Encounter.grass_percent_for n %></div>
 								</div>
 							<% end %>

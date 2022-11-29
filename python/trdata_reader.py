@@ -22,18 +22,9 @@ def set_global_vars():
 
 	TEMPLATE_FLAGS =["has_moves", "has_items", "set_abilities", "set_ball", "set_iv_ev", "set_nature", "shiny_lock", "additional_flags"]
 
-
-
-
 	TRAINER_CLASSES = open(f'texts/tr_classes.txt', "r").read().splitlines()
-
-
 	TRAINER_NAMES = open(f'texts/tr_names.txt', "r").read().splitlines()
-
-
-
 	ITEMS = open(f'texts/items.txt', mode="r").read().splitlines()
-
 	BATTLE_TYPES = ["Singles", "Doubles"]
 
 	TRPOK_INFO = []
