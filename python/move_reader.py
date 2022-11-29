@@ -22,7 +22,7 @@ def set_global_vars():
 		settings = json.load(outfile) 
 		ROM_NAME = settings['rom_name']
 
-	TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fairy" "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"]
+	TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"]
 	CATEGORIES = ["Status","Physical","Special"]
 
 	EFFECT_CATEGORIES = ["No Special Effect", "Status Inflicting","Target Stat Changing","Healing","Chance to Inflict Status","Raising Target's Stat along Attack", "Lowering Target's Stat along Attack","Raise user stats","Lifesteal","OHKO","Weather","Safeguard", "Force Switch Out", "Unique Effect"]

@@ -7,14 +7,12 @@ from personal_reader import output_personal_json
 from learnset_reader import output_learnsets_json
 from move_reader import output_moves_json
 from arm9_reader import output_tms_json
-from grotto_odds_reader import output_grotto_odds_json
 from encounter_reader import output_encounters_json
 from trdata_reader import output_trdata_json
 from item_reader import output_items_json
 from evolution_reader import output_evolutions_json
-from grotto_reader import output_grottos_json
 from mart_reader import output_marts_json
-from overworld_reader import output_overworlds_json
+from hidden_ability_reader import output_hidden_abilities_json
 
 
 def output(narc):	
@@ -36,7 +34,7 @@ with open(f'session_settings.json', "r") as outfile:
 	narc_info = json.load(outfile) 
 
 
-narcs_to_output = ["personal", "learnsets", "moves", "evolutions", "trdata", "encounters"]
+narcs_to_output = ["personal", "learnsets", "moves", "evolutions", "trdata", "encounters", "hidden_abilities"]
 # narcs_to_output = ["overworlds"]
 # if narc_info["base_rom"] == "BW2":
 # 	narcs_to_output += ["grottos", "marts", "grotto_odds"]

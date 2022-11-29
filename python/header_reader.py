@@ -10,7 +10,7 @@ import json
 import copy
 import re
 
-import text_reader
+# import text_reader
 
 # code.interact(local=dict(globals(), **locals()))
 

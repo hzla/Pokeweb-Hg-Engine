@@ -7,10 +7,8 @@ import codecs
 import os
 import json
 import sys
-import msg_reader
-import msg_reader2
-from header_reader import output_headers_json
-from msg_reader2 import output_texts
+# import msg_reader
+# from header_reader import output_headers_json
 
 
 # code.interact(local=dict(globals(), **locals()))

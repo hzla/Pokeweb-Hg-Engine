@@ -17,39 +17,37 @@ def set_global_vars():
 		ROM_NAME = settings['rom_name']
 
 
-	LOCATIONS = open(f'{ROM_NAME}/texts/locations.txt', mode="r" ,encoding='utf-8').read().splitlines()
 
 
-	POKEDEX = open(f'{ROM_NAME}/texts/pokedex.txt', "r").read().splitlines()
+	POKEDEX = open(f'texts/pokedex.txt', "r").read().splitlines()
 
-	ENCOUNTER_NARC_FORMAT = []
+	ENCOUNTER_NARC_FORMAT = [
+	[1, "walking_rate"],
+	[1, "surf_rate"],
+	[1, "rock_smash_rate"],
+	[1, "old_rod_rate"],
+	[1, "good_rod_rate"],
+	[1, "super_rod_rate"],
+	[2, "padding"]]
 
-	seasons = ["spring", "summer", "fall", "winter"]
+	for n in range(0,12):
+		ENCOUNTER_NARC_FORMAT.append([1, f'walking_{n}_level'])
 
-	for season in seasons:
-		s_encounters = [[1,f'{season}_grass_rate'],
-		[1, f'{season}_grass_doubles_rate'],
-		[1, f'{season}_grass_special_rate'],
-		[1, f'{season}_surf_rate'],
-		[1, f'{season}_surf_special_rate'],
-		[1, f'{season}_super_rod_rate'],
-		[1, f'{season}_super_rod_special_rate'],
-		[1, f'{season}_blank']]
+	for time in ["morning", "day", "night"]:
+		for n in range(0,12):
+			ENCOUNTER_NARC_FORMAT.append([2, f'{time}_{n}_species_id'])
 
-		for enc_type in ["grass", "grass_doubles", "grass_special"]:
-			for n in range(0,12):
-				s_encounters.append([2, f'{season}_{enc_type}_slot_{n}'])
-				s_encounters.append([1, f'{season}_{enc_type}_slot_{n}_min_level'])
-				s_encounters.append([1, f'{season}_{enc_type}_slot_{n}_max_level'])
+	for region in ["hoenn", "sinnoh"]:
+		for n in range(0,2):
+			ENCOUNTER_NARC_FORMAT.append([2, f'{region}_{n}_species_id'])
 
-		for wat_enc_type in ["surf", "surf_special", "super_rod" , "super_rod_special"]:
-			for n in range(0,5):
-				s_encounters.append([2, f'{season}_{wat_enc_type}_slot_{n}'])
-				s_encounters.append([1, f'{season}_{wat_enc_type}_slot_{n}_min_level'])
-				s_encounters.append([1, f'{season}_{wat_enc_type}_slot_{n}_max_level'])
+	method_counts = [5,2,5,5,5]
+	for idx, method in enumerate(["surf", "rock_smash", "old_rod", "good_rod", "super_rod"]):
+		for n in range(0, method_counts[idx]):
+			ENCOUNTER_NARC_FORMAT.append([1, f'{method}_{n}_min_lvl'])
+			ENCOUNTER_NARC_FORMAT.append([1, f'{method}_{n}_max_lvl'])
+			ENCOUNTER_NARC_FORMAT.append([2, f'{method}_{n}_species_id'])
 
-		for entry in s_encounters:
-			ENCOUNTER_NARC_FORMAT.append(entry)
 
 
 def output_encounters_json(narc):
@@ -57,8 +55,6 @@ def output_encounters_json(narc):
 	data_index = 0
 	# code.interact(local=dict(globals(), **locals()))
 
-	# while len(narc.files) < 160:
-	# 	narc.files.append(narc.files[89])
 	for data in narc.files:
 		data_name = data_index
 		read_narc_data(data, ENCOUNTER_NARC_FORMAT, data_name, "encounters")
@@ -71,11 +67,6 @@ def read_narc_data(data, narc_format, file_name, narc_name):
 	#USE THE FORMAT LIST TO PARSE BYTES
 	for entry in narc_format: 
 		file["raw"][entry[1]] = read_bytes(stream, entry[0])
-
-		#copy data from spring section if not present in current season
-		if file["raw"][entry[1]] == 0 and "spring" not in entry[1]:
-			spring_data = "spring_" + "_".join(entry[1].split("_")[1:])
-			file["raw"][entry[1]] = file["raw"][spring_data]
 
 	#CONVERT TO READABLE FORMAT USING CONSTANTS/TEXT BANKS
 	file["readable"] = to_readable(file["raw"], file_name)
@@ -90,31 +81,44 @@ def read_narc_data(data, narc_format, file_name, narc_name):
 def to_readable(raw, file_name):
 	readable = copy.deepcopy(raw)
 	
-	for season in ["spring", "summer", "fall", "winter"]:
+	for time in ["morning", "day", "night"]:
+		for n in range(0,12):
+			mondata = get_form(raw[f'{time}_{n}_species_id'])
+			readable[f'{time}_{n}_species_id'] = POKEDEX[mondata[1]]
+			readable[f'{time}_{n}_species_form'] = mondata[0]
 
-		for enc_type in ["grass", "grass_doubles", "grass_special"]:
-			for n in range(0,12):
-				index = raw[f'{season}_{enc_type}_slot_{n}']
-				
-				if index >= 2048:
-					readable[f'{season}_{enc_type}_slot_{n}_form'] = floor(index / 2048)
-					index = index % 2048
 
-				readable[f'{season}_{enc_type}_slot_{n}'] = POKEDEX[index]
+	for region in ["hoenn", "sinnoh"]:
+		for n in range(0,2):
+			mondata = get_form(raw[f'{region}_{n}_species_id'])
+			readable[f'{region}_{n}_species_id'] = POKEDEX[mondata[1]]
+			readable[f'{region}_{n}_species_form'] = mondata[0]
 
-		for wat_enc_type in ["surf", "surf_special", "super_rod" , "super_rod_special"]:
-			for n in range(0,5):
-				index = raw[f'{season}_{wat_enc_type}_slot_{n}']		
-				if index >= 2048:
-					readable[f'{season}_{wat_enc_type}_slot_{n}_form'] = floor(index / 2048)
-					index = index % 2048
-
-				readable[f'{season}_{wat_enc_type}_slot_{n}'] = POKEDEX[index]
+	method_counts = [5,2,5,5,5]
+	for idx, method in enumerate(["surf", "rock_smash", "old_rod", "good_rod", "super_rod"]):
+		for n in range(0, method_counts[idx]):
+			ENCOUNTER_NARC_FORMAT.append([1, f'{method}_{n}_min_lvl'])
+			ENCOUNTER_NARC_FORMAT.append([1, f'{method}_{n}_max_lvl'])
+			
+			mondata = get_form(raw[f'{method}_{n}_species_id'])
+			readable[f'{method}_{n}_species_id'] = POKEDEX[mondata[1]]
+			readable[f'{method}_{n}_species_form'] = mondata[0]
 	return readable
 
 
 def read_bytes(stream, n):
 	return int.from_bytes(stream.read(n), 'little')
+
+def get_form(species_id):
+	if species_id < 1024:
+		return [1, species_id]
+	else:
+		form = species_id // 1024
+		base_form_id = raw[f'target_{n}'] - (1024 * form)
+		return [form + 1, base_form_id]
+
+
+
 
 	
 

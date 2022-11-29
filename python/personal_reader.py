@@ -21,7 +21,7 @@ def set_global_vars():
 		settings = json.load(outfile) 
 		ROM_NAME = settings['rom_name']
 
-	TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fairy" "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"]
+	TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"]
 	
 
 

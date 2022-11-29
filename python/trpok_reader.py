@@ -20,7 +20,7 @@ def set_global_vars():
 		NARC_FILE_ID = settings['trpok']
 		NARC_PATH = f'{ROM_NAME}/narcs/trpok-{NARC_FILE_ID}.narc'
 
-	TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fairy" "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"]
+	TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"]
 	POKEDEX = open(f'texts/pokedex.txt', "r").read().splitlines()
 	ITEMS = open(f'texts/items.txt', mode="r").read().splitlines()
 	NATURES = open(f'texts/natures.txt', mode="r").read().splitlines()
@@ -132,8 +132,8 @@ def output_trpok_json(trpok_info):
 			narc_format.remove([4, "padding"])
 
 		# print(trdata)
-		print("NARC FORMAT ###############")
-		print(narc_format)
+		# print("NARC FORMAT ###############")
+		# print(narc_format)
 
 		read_narc_data(data, narc_format, data_name, "trpok", template, num_pokemon, trdata)
 		data_index += 1
@@ -147,8 +147,8 @@ def read_narc_data(data, narc_format, file_name, narc_name, template, num_pokemo
 	# print(file_name)
 	# print(narc_format)
 
-	print(file_name)
-	print("###############")
+	# print(file_name)
+	# print("###############")
 	#USE THE FORMAT LIST TO PARSE BYTES
 	
 	for n in range(0, num_pokemon):

@@ -208,7 +208,7 @@ end
 
 get '/encounters' do 
 	@encounters = Encounter.get_all
-	@location_names = Header.location_names
+
 
 	erb :encounters
 end
@@ -358,7 +358,7 @@ end
 
 get '/encounters' do 
 	@encounters = Encounter.get_all
-	@location_names = Header.location_names
+
 
 	erb :encounters
 end

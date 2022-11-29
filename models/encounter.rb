@@ -4,7 +4,7 @@ class Encounter < Pokenarc
 	def self.get_all
 		@@narc_name = "encounters"
 		data = super
-		expand_encounter_info(data, Header.get_all)
+		expand_encounter_info(data)
 
 	end
 
@@ -68,39 +68,26 @@ class Encounter < Pokenarc
 	end
 
 
-	def self.expand_encounter_info(encounter_data, header_data)
-		header_count = header_data["count"]
+	def self.expand_encounter_info(encounter_data)
 		encounter_count = encounter_data.length
-
-		(1..header_count).each do |n|
-			header = header_data[n.to_s]
-			encounter_id = header["encounter_id"]
-
-			if encounter_id <= encounter_count
-				if encounter_data[encounter_id]["locations"]
-					encounter_data[encounter_id]["locations"].push("#{header["location_name"]} (#{n})")
-				else
-					encounter_data[encounter_id]["locations"] = ["#{header["location_name"]} (#{n})"]
-				end
-			end
-		end
 
 		encounter_data.each_with_index do |enc, i|
 			wilds = []
 			
-			seasons.each do |season|
-				grass_fields.each do |enc_type|
-					(0..11).each do |n|
-						wilds << enc["#{season}_#{enc_type}_slot_#{n}"].gsub(/[^0-9A-Za-z\-]/, '').name_titleize
-					end
-				end
-				water_fields.each do |enc_type|
-					(0..4).each do |n|
-						wilds << enc["#{season}_#{enc_type}_slot_#{n}"].gsub(/[^0-9A-Za-z\-]/, '').name_titleize
-					end
+
+			grass_fields.each do |enc_type|
+				(0..11).each do |n|
+					wilds << enc["#{enc_type}_#{n}_species_id"].gsub(/[^0-9A-Za-z\-]/, '').name_titleize
 				end
 			end
+			extra_fields.each_with_index do |enc_type, j|
+				(0..extra_field_counts[j] - 1).each do |n|
+					wilds << enc["#{enc_type}_#{n}_species_id"].gsub(/[^0-9A-Za-z\-]/, '').name_titleize
+				end
+			end
+
 			encounter_data[i]["wilds"] = wilds.reject(&:empty?).uniq
+			encounter_data[i]["wilds"].delete("-----")
 		end
 		encounter_data
 	end
@@ -110,18 +97,26 @@ class Encounter < Pokenarc
 	end
 
 	def self.grass_fields
-		["grass", "grass_doubles", "grass_special"]
+		["morning", "day", "night"]
 	end
 
 	def self.water_fields
 		["surf", "surf_special", "super_rod" , "super_rod_special"]
 	end
 
+	def self.extra_fields
+		["surf", "rock_smash", "old_rod", "good_rod", "super_rod", "hoenn", "sinnoh"]
+	end
+
+	def self.extra_field_counts
+		[5,2,5,5,5,2,2]
+	end
+
 	def self.grass_percent_for(n)
 		[20,20,10,10,10,10,5,5,4,4,1,1][n]
 	end
 
-	def self.water_percent_for(n)
+	def self.extra_percent_for(n)
 		[60, 30, 5, 4, 1][n]
 	end
 

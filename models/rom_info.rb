@@ -23,7 +23,7 @@ class RomInfo
 
 
 	def self.types
-		typing = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fairy" "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"].map do |type|
+		typing = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"].map do |type|
 			type.upcase
 		end
 	end

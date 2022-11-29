@@ -5,60 +5,16 @@ class Personal
 		file_count = files.length
 
 		data = []
+		ability_path = "#{$rom_name}/json/abilities/hidden_abilities.json"
+		hidden_abilities = JSON.parse(File.open(ability_path, "r"){|f| f.read})["readable"]
 
 		(0..file_count - 1).each do |n|
 			file_path = "#{$rom_name}/json/personal/#{n}.json"
-			data << get_data_for(file_path)
+			data << get_data_for(file_path, hidden_abilities)
 		end
 
-		data[29]["name"] = "Nidoran-F"
-		data[32]["name"] = "Nidoran-M"
-		data[83]["name"] = "Farfetch’d"
 
 
-		if SessionSettings.base_rom == "BW2"
-			data[685]["name"] = "Deoxys-Attack"
-			data[686]["name"] = "Deoxys-Defense"
-			data[687]["name"] = "Deoxys-Speed"
-			data[688]["name"] = "Wormadam-Sandy"
-			data[689]["name"] = "Wormadam-Trash"
-			data[690]["name"] = "Shaymin-Sky"	
-			data[691]["name"] = "Giratina-Origin"
-			data[692]["name"] = "Rotom-Heat"
-			data[693]["name"] = "Rotom-Wash"
-			data[694]["name"] = "Rotom-Frost"
-			data[695]["name"] = "Rotom-Fan"
-			data[696]["name"] = "Rotom-Mow"
-			data[697]["name"] = "Castform-Sunny"
-			data[698]["name"] = "Castform-Rainy"
-			data[699]["name"] = "Castform-Snowy"
-			data[700]["name"] = "Basculin-Blue-Striped"
-			data[701]["name"] = "Darmanitan-Zen"
-			data[702]["name"] = "Meloetta-Pirouette"
-			data[703]["name"] = "Kyurem-White"
-			data[704]["name"] = "Kyurem-Black"
-			data[705]["name"] = "Keldeo-Resolute"
-			data[706]["name"] = "Tornadus-Therian"
-			data[707]["name"] = "Thundurus-Therian"
-			data[708]["name"] = "Landorus-Therian"
-		else
-			data[650]["name"] = "Deoxys-Attack"
-			data[651]["name"] = "Deoxys-Defense"
-			data[652]["name"] = "Deoxys-Speed"
-			data[655]["name"] = "Shaymin-Sky"	
-			data[656]["name"] = "Giratina-Origin"
-			data[657]["name"] = "Rotom-Heat"
-			data[658]["name"] = "Rotom-Wash"
-			data[659]["name"] = "Rotom-Frost"
-			data[660]["name"] = "Rotom-Fan"
-			data[661]["name"] = "Rotom-Mow"
-			data[662]["name"] = "Castform-Sunny"
-			data[663]["name"] = "Castform-Rainy"
-			data[664]["name"] = "Castform-Snowy"
-			data[665]["name"] = "Basculin-Blue-Striped"
-			data[666]["name"] = "Darmanitan-Zen"
-			data[667]["name"] = "Meloetta-Pirouette"
-		end
 		data
 	end
 
@@ -107,7 +63,7 @@ class Personal
 		taken_slots.sort_by {|p| p[0]}
 	end
 
-	def self.get_data_for(file_name)
+	def self.get_data_for(file_name, hidden_abilities)
 		pok_id = file_name.split('/')[-1].split('.')[0]
 
 		personal_data = JSON.parse(File.open(file_name, "r"){|f| f.read})["readable"]
@@ -117,6 +73,7 @@ class Personal
 		learnset_data = JSON.parse(File.open(learnset_data_path, "r"){|f| f.read})["readable"]
 
 		personal_data["learnset"] = learnset_data
+		personal_data["ability_3"] = hidden_abilities[pok_id.to_s]
 		personal_data		
 	end
 
