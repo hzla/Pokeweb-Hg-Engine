@@ -17,39 +17,39 @@
 			</div>
 
 			<div class="expanded-field">
-				<div class="expanded-trlabel">Set Ability</div>
-				<%= field "custom_ability_#{trpok_index}", 'tr-item', {value: trpok["custom_ability_#{trpok_index}"],  narc: "trpok"} %>	
+				<div class="expanded-trlabel">Ability</div>
+				<%= field "custom_ability_#{trpok_index}", 'tr-item', {value: trpok["custom_ability_#{trpok_index}"].name_titleize,  narc: "trpok", autofill: "abilities"} %>	
 			</div>
 
 			<div class="expanded-field">
-				<div class="expanded-trlabel">Set Nature</div>
-				<%= field "nature_#{trpok_index}", 'tr-item', {value: trpok["nature_#{trpok_index}"],  narc: "trpok"} %>	
+				<div class="expanded-trlabel">Nature</div>
+				<%= field "nature_#{trpok_index}", 'tr-item', {value: trpok["nature_#{trpok_index}"].name_titleize,  narc: "trpok", autofill: "natures"} %>	
 			</div>
 
 			<div class="expanded-field">
-				<div class="expanded-trlabel">Set Shiny</div>
-				<%= field "shiny_lock_#{trpok_index}", 'tr-item', {value: trpok["shiny_lock_#{trpok_index}"],  narc: "trpok"} %>	
+				<div class="expanded-trlabel">Shiny?</div>
+				<%= field "shiny_lock_#{trpok_index}", 'tr-item', {value: trpok["shiny_lock_#{trpok_index}"],  narc: "trpok", type: "int-1"} %>	
 			</div>
 
 			<div class="expanded-field">
-				<div class="expanded-trlabel">Set Status</div>
-				<%= field "status_#{trpok_index}", 'tr-item', {value: trpok["status_#{trpok_index}"],  narc: "trpok", int: 255} %>	
+				<div class="expanded-trlabel">Status</div>
+				<%= field "status_#{trpok_index}", 'tr-item', {value: trpok["status_#{trpok_index}"],  narc: "trpok", type: "int-255"} %>	
 			</div>
 
 			<% ["hp", "atk", "def", "spd", "spatk", "spdef"].each do |stat| %>
 				<div class="expanded-field">
-					<div class="expanded-trlabel">Set <%= stat %></div>
-					<%= field "#{stat}_#{trpok_index}", 'tr-item', {value: trpok["#{stat}_#{trpok_index}"],  narc: "trpok", int: 255} %>	
+					<div class="expanded-trlabel"><%= stat.titleize %></div>
+					<%= field "#{stat}_#{trpok_index}", 'tr-item', {value: trpok["#{stat}_#{trpok_index}"],  narc: "trpok", type: "int-255"} %>	
 				</div>
 			<% end %>
 
 			<div class="expanded-field">
-				<div class="expanded-trlabel">Set Type 1</div>
+				<div class="expanded-trlabel">Type 1</div>
 				<%= field "type_1_#{trpok_index}", 'tr-item', {value: trpok["type_1_#{trpok_index}"],  narc: "trpok"} %>	
 			</div>
 
 			<div class="expanded-field">
-				<div class="expanded-trlabel">Set Type 2</div>
+				<div class="expanded-trlabel">Type 2</div>
 				<%= field "type_2_#{trpok_index}", 'tr-item', {value: trpok["type_2_#{trpok_index}"],  narc: "trpok"} %>	
 			</div>
 
@@ -88,7 +88,7 @@
 			<% (1..4).each do |m| %>
 				<div class="expanded-field">
 					<div class="expanded-trlabel">Move <%= m %> PP</div>
-					<%= field "move_#{m}_pp_#{trpok_index}", 'tr-item trpok-mov', {value: trpok["move_#{m}_pp_#{trpok_index}"],  narc: "trpok", check: "has-moves", int: 255} %>	
+					<%= field "move_#{m}_pp_#{trpok_index}", 'tr-item trpok-mov', {value: trpok["move_#{m}_pp_#{trpok_index}"],  narc: "trpok", check: "has-moves", type: "int-255"} %>	
 				</div>
 			<% end %>
 
@@ -97,7 +97,7 @@
 			
 				<% ["hp", "atk", "def", "spd", "spatk", "spdef"].each do |stat| %>
 						<div class="expanded-field">
-							<div class="expanded-trlabel"><%= "#{stat} #{stat_type}" %>
+							<div class="expanded-trlabel"><%= "#{stat} #{stat_type}".titleize %>
 
 							</div>
 							<%= field "#{stat}_#{stat_type}_#{trpok_index}", 'tr-item', {value: trpok["#{stat}_#{stat_type}_#{trpok_index}"],  narc: "trpok", type: "int-255"} %>

@@ -32,7 +32,6 @@
 		<div class="expanded-field filterable" data-index="<%= n %>">
 			<div class="expanded-field-main">
 				<div class="hdr-id"><%= n %></div>
-				<% p @header_data[n.to_s] %>
 				<%= field 'location_name', 'hdr-location', {value: @header_data[n.to_s]["location_name"],  narc: "header", autofill: "location_names"} %>
 
 				<%= field 'matrix', 'hdr-matrix', {value: @header_data[n.to_s]["matrix"],  narc: "header", type: "int-65535"} %>

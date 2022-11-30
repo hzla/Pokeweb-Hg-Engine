@@ -84,7 +84,7 @@ class Trpok < Pokenarc
 
 	def self.write_data data, batch=false
 		@@narc_name = "trpok"
-		@@upcases = ["species", "move"]
+		@@upcases = []
 		p data
 		super
 	end

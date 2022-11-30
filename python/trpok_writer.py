@@ -13,7 +13,7 @@ import sys
 
 ######################### CONSTANTS #############################
 def set_global_vars():
-	global ROM_NAME, NARC_FORMATS, NARC_FILE_ID, POKEDEX, ITEMS, trpok, MOVES, GENDERS
+	global ROM_NAME, NARC_FORMATS, NARC_FILE_ID, POKEDEX, ITEMS, trpok, MOVES, GENDERS, TRAINER_FLAGS, FLAG_BINDINGS, FLAGS, POK_FLAG_BINDINGS, ABILITIES, NATURES
 	
 	with open(f'session_settings.json', "r") as outfile:  
 		settings = json.load(outfile) 
@@ -31,7 +31,13 @@ def set_global_vars():
 	FLAGS = ['status', 'hp', 'atk', 'def', 'spd', 'spatk', 'spdef', 'types', 'pp_counts', 'nickname']
 	EXTRA_FLAGS = ['status', 'hp', 'atk', 'def', 'spd', 'spatk', 'spdef', 'type_1', 'type_2', 'move_1_pp','move_2_pp','move_3_pp','move_4_pp', 'nickname']
 
+	TRAINER_FLAGS = ["has_moves", "has_items", "set_abilities", "set_ball", "set_iv_ev", "set_nature", "shiny_lock", "additional_flags"]
 
+	FLAG_BINDINGS = {}
+	
+
+	POK_FLAG_BINDINGS = ['status', 'hp', 'atk', 'def', 'spd', 'spatk', 'spdef', 'types', 'move_1_pp', 'nickname']
+	FLAG_BINDINGS = ["move_1", "item_id", "custom_ability", "ball", "hp_iv", "nature", "shiny_lock", "additional_flags"]
 
 
 	NARC_FORMAT = [[1, "ivs"],
@@ -151,12 +157,13 @@ def write_readable_to_raw(file_name, narc_name="trpok"):
 
 
 
-		new_raw_data = to_raw(json_data["readable"], template)
-		json_data["raw"] = new_raw_data
+		new_raw_data = to_raw(json_data["readable"], template, tr_data)
+		json_data["raw"] = new_raw_data[0]
 
 
 		tr_data["raw"]["num_pokemon"] = json_data["readable"]["count"]
 		tr_data["readable"]["num_pokemon"] = json_data["readable"]["count"]
+		tr_data["raw"]["template"] = new_raw_data[1]
 
 	with open(f'{ROM_NAME}/json/trdata/{file_name}.json', "w") as outfile:
 		json.dump(tr_data, outfile)
@@ -164,36 +171,70 @@ def write_readable_to_raw(file_name, narc_name="trpok"):
 	with open(json_file_path, "w", encoding='ISO8859-1') as outfile: 
 		json.dump(json_data, outfile)
 
-def to_raw(readable, template):
+def to_raw(readable, template, trdata):
 	raw = copy.deepcopy(readable)
 
 	n = 0
+	tr_flag_values = []
+	tr_flags = 0
+
 	while n < readable["count"]:
 		if f'species_id_{n}' in raw:	
 
 			raw[f'species_id_{n}'] = POKEDEX.index(readable[f'species_id_{n}'])
+			flag_values = []
 
-			raw[f'ability_{n}'] = int(readable[f'ability_{n}']) * 16
+			# set additional flags based on fields found with data
+			for idx, flag in enumerate(POK_FLAG_BINDINGS):
+				if f'{flag}_{n}' in raw:
+					flag_values.append(1 << idx)
+					print(flag)
 
-			raw[f'ability_{n}'] += GENDERS.index(readable[f'gender_{n}'])
+			if flag_values != []:
+				additional_flags = 0
+				for value in flag_values:
+					additional_flags = additional_flags | value
+
+				raw[f'additional_flags_{n}'] = additional_flags
+
+			
+			# set tr flags based on fields found with data
+
+			if f'custom_ability_{n}' in raw:
+				raw[ f'custom_ability_{n}'] = ABILITIES.index(raw[ f'custom_ability_{n}'].upper())
+
+			if f'nature_{n}' in raw:
+				raw[ f'nature_{n}'] = NATURES.index(raw[ f'nature_{n}'].upper())
+			
+			for idx, flag in enumerate(FLAG_BINDINGS):
+				if f'{flag}_{n}' in raw:
+					tr_flag_values.append(1 << idx)
+					print(flag)
+
+			print(tr_flag_values)
+
+				
+
+			for m in range(1,5):
+				if f'move_{m}_{n}' in readable:
+					raw[f'move_{m}_{n}'] = MOVES.index(readable[f'move_{m}_{n}'])
+				else: 
+					raw[f'move_{m}_{n}'] = 0
 
 
-			if template == 1 or template == 3:
-				for m in range(1,5):
-					if f'move_{m}_{n}' in readable:
-						raw[f'move_{m}_{n}'] = MOVES.index(readable[f'move_{m}_{n}'])
-					else: 
-						raw[f'move_{m}_{n}'] = 0
-
-			if template > 1:
-				if f'item_id_{n}' in readable:
-					raw[f'item_id_{n}'] = ITEMS.index(readable[f'item_id_{n}'])
-				else:
-					raw[f'item_id_{n}'] = 0
+			if f'item_id_{n}' in readable:
+				raw[f'item_id_{n}'] = ITEMS.index(readable[f'item_id_{n}'])
+			else:
+				raw[f'item_id_{n}'] = 0
 
 			n += 1
 
-	return raw
+	if tr_flag_values != []:
+		for value in tr_flag_values:
+			tr_flags = tr_flags | value
+			print(tr_flags)
+
+	return [raw, tr_flags]
 	
 
 def write_bytes(stream, n, data):

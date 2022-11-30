@@ -420,7 +420,7 @@ $(document).ready(function() {
 
 					 }
 
-
+					
 					valid_fields = JSON.stringify(valid_fields)
 
 					if (!valid_fields.includes(value) || value == "-" || value == "") {

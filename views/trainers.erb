@@ -6,7 +6,7 @@
 
 	// info for autocomplete
 	autofills = {
-		<% [:items, :pokemon_names, :abilities, :class_names, :battle_types, :genders].each do |info| %>
+		<% [:items, :pokemon_names, :abilities, :class_names, :battle_types, :genders, :natures].each do |info| %>
 			"<%= info.to_s %>": <%= RomInfo.send(info) %>,
 		<% end %>
 		"move_names": <%= @move_names %>
@@ -16,7 +16,16 @@
 <div class="pokemon-filter">	
 	<div class="filter-title">Search</div>
 	<input class="filter-input" id="search-text"/>
-	<button class="btn -default" id="search-text-btn" type="button">Search</button>			
+	<button class="btn -default" id="search-text-btn" type="button">Search</button>
+
+	<div>
+		<br><br>
+		If you set a custom ability, nature, shiny, ball, IV stat, or EV stat for one pokemon, you must set the same for all pokemon of that trainer.
+		<br><br>
+		If you set an IV or EV stat for one pokemon, you must set all IVs and EVs for pokemon of that trainer. 
+
+
+	</div>			
 </div>
 
 <div class="pokemon-list spreadsheet" id="trainers">
