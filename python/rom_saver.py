@@ -10,16 +10,16 @@ from os import path
 import json
 import sys
 
-import msg_reader
+# import msg_reader
 import personal_writer
 import learnset_writer
 import move_writer
-import tm_writer
+# import tm_writer
 import header_writer
 import encounter_writer
 import trdata_writer
 import trpok_writer
-import item_writer
+# import item_writer
 import evolution_writer
 
 # code.interact(local=dict(globals(), **locals()))
@@ -40,7 +40,7 @@ header_writer.output_narc()
 encounter_writer.output_narc()
 trpok_writer.output_narc()
 trdata_writer.output_narc()
-item_writer.output_narc()
+# item_writer.output_narc()
 evolution_writer.output_narc()
 
 with open(f"{rom_name.split('/')[1]}.nds", 'rb') as f:
@@ -55,11 +55,11 @@ with open(f'session_settings.json', "r") as outfile:
 	personal_narc_file_id = settings["personal"]
 	learnset_narc_file_id = settings["learnsets"]
 	moves_narc_file_id = settings["moves"]
-	headers_narc_file_id = settings["headers"]
+	# headers_narc_file_id = settings["headers"]
 	encounters_narc_file_id = settings["encounters"]
 	trdata_narc_file_id = settings["trdata"]
 	trpok_narc_file_id = settings["trpok"]
-	item_narc_file_id = settings["items"]
+	# item_narc_file_id = settings["items"]
 	evolution_narc_file_id = settings["evolutions"]
 	if settings["base_rom"] == "BW2":
 		mart_narc_file_id = settings["marts"]
@@ -90,36 +90,36 @@ if settings["output_arm9"] == True:
 	rom = ndspy.rom.NintendoDSRom(mutable_rom)
 
 
-if settings["base_rom"] == "BW2":
-	import mart_writer
-	import grotto_writer
-	mart_writer.output_narc()
-	grotto_writer.output_narc()
+# if settings["base_rom"] == "BW2":
+# 	import mart_writer
+# 	import grotto_writer
+# 	mart_writer.output_narc()
+# 	grotto_writer.output_narc()
 
 
-	grotto_odds = 0
+# 	grotto_odds = 0
 
-	grotto_odds = open(f'{rom_name}/grotto_odds.bin','rb').read()
+# 	grotto_odds = open(f'{rom_name}/grotto_odds.bin','rb').read()
 
-	#load decompressed overlay
-	overlay36 = rom.loadArm9Overlays([36])[36]
+# 	#load decompressed overlay
+# 	overlay36 = rom.loadArm9Overlays([36])[36]
 	
-	#set data
-	overlay36_data = overlay36.data
+# 	#set data
+# 	overlay36_data = overlay36.data
 
-	B2_GROTTO_ODDS_OFFSET = 0x00055218
+# 	B2_GROTTO_ODDS_OFFSET = 0x00055218
 	
-	# overwrite data with edits
+# 	# overwrite data with edits
 
-	overlay36_data[B2_GROTTO_ODDS_OFFSET:(B2_GROTTO_ODDS_OFFSET + 200)] = grotto_odds
+# 	overlay36_data[B2_GROTTO_ODDS_OFFSET:(B2_GROTTO_ODDS_OFFSET + 200)] = grotto_odds
 	
-	#set new data
-	overlay36.data = overlay36_data
+# 	#set new data
+# 	overlay36.data = overlay36_data
 
-	# recompress and insert
+# 	# recompress and insert
 
-	rom.files[36] = overlay36.save(compress=True)
-	print("saved grotto odds")
+# 	rom.files[36] = overlay36.save(compress=True)
+# 	print("saved grotto odds")
 
 
 
@@ -128,11 +128,11 @@ if settings["base_rom"] == "BW2":
 personal_narc_filepath = f'{rom_name}/narcs/personal-{personal_narc_file_id}.narc'
 learnset_narc_filepath = f'{rom_name}/narcs/learnsets-{learnset_narc_file_id}.narc'
 moves_narc_filepath = f'{rom_name}/narcs/moves-{moves_narc_file_id}.narc'
-headers_narc_filepath = f'{rom_name}/narcs/headers-{headers_narc_file_id}.narc'
+# headers_narc_filepath = f'{rom_name}/narcs/headers-{headers_narc_file_id}.narc'
 encounters_narc_filepath = f'{rom_name}/narcs/encounters-{encounters_narc_file_id}.narc'
 trdata_narc_filepath = f'{rom_name}/narcs/trdata-{trdata_narc_file_id}.narc'
 trpok_narc_filepath = f'{rom_name}/narcs/trpok-{trpok_narc_file_id}.narc'
-item_narc_filepath = f'{rom_name}/narcs/items-{item_narc_file_id}.narc'
+# item_narc_filepath = f'{rom_name}/narcs/items-{item_narc_file_id}.narc'
 evolution_narc_filepath = f'{rom_name}/narcs/evolutions-{evolution_narc_file_id}.narc'
 
 if settings["base_rom"] == "BW2":
@@ -146,23 +146,23 @@ print("writing narcs")
 rom.files[personal_narc_file_id] = open(personal_narc_filepath, 'rb').read()
 rom.files[learnset_narc_file_id] = open(learnset_narc_filepath, 'rb').read()
 rom.files[moves_narc_file_id] = open(moves_narc_filepath, 'rb').read()
-rom.files[headers_narc_file_id] = open(headers_narc_filepath, 'rb').read()
+# rom.files[headers_narc_file_id] = open(headers_narc_filepath, 'rb').read()
 rom.files[encounters_narc_file_id] = open(encounters_narc_filepath, 'rb').read()
 rom.files[trdata_narc_file_id] = open(trdata_narc_filepath, 'rb').read()
 rom.files[trpok_narc_file_id] = open(trpok_narc_filepath, 'rb').read()
-rom.files[item_narc_file_id] = open(item_narc_filepath, 'rb').read()
+# rom.files[item_narc_file_id] = open(item_narc_filepath, 'rb').read()
 rom.files[evolution_narc_file_id] = open(evolution_narc_filepath, 'rb').read()
 
-if settings["base_rom"] == "BW2":
-	rom.files[mart_narc_file_id] = open(mart_narc_filepath, 'rb').read()
-	rom.files[mart_counts_narc_file_id] = open(mart_counts_narc_filepath, 'rb').read()
-	print("saved mart")
-	rom.files[grotto_narc_file_id] = open(grotto_narc_filepath, 'rb').read()
-	print("saved grotto")
-	rom.files[sprites_narc_file_id] = open(f'{rom_name}/narcs/sprites-{sprites_narc_file_id}.narc', 'rb').read()
-	rom.files[b_animations_narc_file_id] = open(f'{rom_name}/narcs/battle_animations-{b_animations_narc_file_id}.narc', 'rb').read()
-	rom.files[animations_narc_file_id] = open(f'{rom_name}/narcs/move_animations-{animations_narc_file_id}.narc', 'rb').read()
-	rom.files[icons_narc_file_id] = open(f'{rom_name}/narcs/icons-{icons_narc_file_id}.narc', 'rb').read()
+# if settings["base_rom"] == "BW2":
+# 	rom.files[mart_narc_file_id] = open(mart_narc_filepath, 'rb').read()
+# 	rom.files[mart_counts_narc_file_id] = open(mart_counts_narc_filepath, 'rb').read()
+# 	print("saved mart")
+# 	rom.files[grotto_narc_file_id] = open(grotto_narc_filepath, 'rb').read()
+# 	print("saved grotto")
+# 	rom.files[sprites_narc_file_id] = open(f'{rom_name}/narcs/sprites-{sprites_narc_file_id}.narc', 'rb').read()
+# 	rom.files[b_animations_narc_file_id] = open(f'{rom_name}/narcs/battle_animations-{b_animations_narc_file_id}.narc', 'rb').read()
+# 	rom.files[animations_narc_file_id] = open(f'{rom_name}/narcs/move_animations-{animations_narc_file_id}.narc', 'rb').read()
+# 	rom.files[icons_narc_file_id] = open(f'{rom_name}/narcs/icons-{icons_narc_file_id}.narc', 'rb').read()
 
 
 print("attempting save")

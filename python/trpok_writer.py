@@ -100,7 +100,7 @@ def output_narc(narc_name="trpok"):
 	for f in json_files:
 		file_name = int(f.split(".")[0])
 
-		write_narc_data(file_name, NARC_FORMATS, narc, narc_name)
+		write_narc_data(file_name, NARC_FORMAT, narc, narc_name)
 
 	old_narc = open(narcfile_path, "wb")
 	old_narc.write(narc.save()) 
