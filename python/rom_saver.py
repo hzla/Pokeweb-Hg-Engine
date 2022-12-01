@@ -36,7 +36,7 @@ print("outputting narcs")
 personal_writer.output_narc()
 learnset_writer.output_narc()
 move_writer.output_narc()
-header_writer.output_narc()
+# header_writer.output_narc()
 encounter_writer.output_narc()
 trpok_writer.output_narc()
 trdata_writer.output_narc()
@@ -70,24 +70,24 @@ with open(f'session_settings.json', "r") as outfile:
 		animations_narc_file_id = settings["move_animations"]
 		icons_narc_file_id = settings["icons"]
 
-if settings["output_arm9"] == True:
+# if settings["output_arm9"] == True:
 
-	tm_writer.output_arm9()
-	mutable_rom = bytearray(data)
-	arm9_offset = 16384 #0x4000
+# 	tm_writer.output_arm9()
+# 	mutable_rom = bytearray(data)
+# 	arm9_offset = 16384 #0x4000
 
-	#get edited arm9
-	edited_arm9_file = bytearray(open(f'{rom_name}/arm9.bin', 'rb').read())
+# 	#get edited arm9
+# 	edited_arm9_file = bytearray(open(f'{rom_name}/arm9.bin', 'rb').read())
 
-	# #compress it
-	print ("compressing arm9")
-	arm9 = bytearray(ndspy.codeCompression.compress(edited_arm9_file, isArm9=True))
+# 	# #compress it
+# 	print ("compressing arm9")
+# 	arm9 = bytearray(ndspy.codeCompression.compress(edited_arm9_file, isArm9=True))
 
-	#reinsert arm9
-	mutable_rom[arm9_offset:arm9_offset + len(arm9)] = arm9
+# 	#reinsert arm9
+# 	mutable_rom[arm9_offset:arm9_offset + len(arm9)] = arm9
 
-	#update rom in memory
-	rom = ndspy.rom.NintendoDSRom(mutable_rom)
+# 	#update rom in memory
+# 	rom = ndspy.rom.NintendoDSRom(mutable_rom)
 
 
 # if settings["base_rom"] == "BW2":

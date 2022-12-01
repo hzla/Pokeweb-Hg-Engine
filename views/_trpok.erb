@@ -39,7 +39,7 @@
 			<% ["hp", "atk", "def", "spd", "spatk", "spdef"].each do |stat| %>
 				<div class="expanded-field">
 					<div class="expanded-trlabel"><%= stat.titleize %></div>
-					<%= field "#{stat}_#{trpok_index}", 'tr-item', {value: trpok["#{stat}_#{trpok_index}"],  narc: "trpok", type: "int-255"} %>	
+					<%= field "#{stat}_#{trpok_index}", 'tr-item', {value: trpok["#{stat}_#{trpok_index}"],  narc: "trpok", type: "int-65535"} %>	
 				</div>
 			<% end %>
 

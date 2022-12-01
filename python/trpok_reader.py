@@ -57,7 +57,6 @@ def set_global_vars():
 	[1, "nature"],
 	[1, "shiny_lock"],
 	[4, "additional_flags"],
-	[4, "padding"],
 	[4, "status"],
 	[2, "hp"],
 	[2, "atk"],
@@ -121,7 +120,6 @@ def output_trpok_json(trpok_info):
 		
 		if trdata["additional_flags"] != 1:			
 			narc_format.remove([4, "additional_flags"])
-			narc_format.remove([4, "padding"])
 
 		# print(trdata)
 		# print("NARC FORMAT ###############")

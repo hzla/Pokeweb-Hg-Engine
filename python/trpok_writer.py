@@ -13,7 +13,7 @@ import sys
 
 ######################### CONSTANTS #############################
 def set_global_vars():
-	global ROM_NAME, NARC_FORMATS, NARC_FILE_ID, POKEDEX, ITEMS, trpok, MOVES, GENDERS, TRAINER_FLAGS, FLAG_BINDINGS, FLAGS, POK_FLAG_BINDINGS, ABILITIES, NATURES
+	global ROM_NAME, NARC_FORMAT, NARC_FILE_ID, POKEDEX, ITEMS, trpok, MOVES, GENDERS, TRAINER_FLAGS, FLAG_BINDINGS, FLAGS, POK_FLAG_BINDINGS, ABILITIES, NATURES
 	
 	with open(f'session_settings.json', "r") as outfile:  
 		settings = json.load(outfile) 
@@ -66,7 +66,6 @@ def set_global_vars():
 	[1, "nature"],
 	[1, "shiny_lock"],
 	[4, "additional_flags"],
-	[4, "padding"],
 	[4, "status"],
 	[2, "hp"],
 	[2, "atk"],
@@ -100,14 +99,14 @@ def output_narc(narc_name="trpok"):
 	for f in json_files:
 		file_name = int(f.split(".")[0])
 
-		write_narc_data(file_name, NARC_FORMAT, narc, narc_name)
+		write_narc_data(file_name, narc, narc_name)
 
 	old_narc = open(narcfile_path, "wb")
 	old_narc.write(narc.save()) 
 
 	print("trpok narc saved")
 
-def write_narc_data(file_name, narc_format, narc, narc_name="trpok"):
+def write_narc_data(file_name, narc, narc_name="trpok"):
 	file_path = f'{ROM_NAME}/json/{narc_name}/{file_name}.json'
 	narcfile_path = f'{ROM_NAME}/narcs/{narc_name}-{NARC_FILE_ID}.narc'
 
@@ -116,18 +115,34 @@ def write_narc_data(file_name, narc_format, narc, narc_name="trpok"):
 	with open(file_path, "r", encoding='ISO8859-1') as outfile:  	
 		json_data = json.load(outfile)	
 
-		tr_data = json.load(open(f'{ROM_NAME}/json/trdata/{file_name}.json', "r"))
-		template = tr_data["raw"]["template"]
+		narc_format = copy.deepcopy(NARC_FORMAT)
+
+
+		trdata = json.load(open(f'{ROM_NAME}/json/trdata/{file_name}.json', "r"))["raw"]
+		
+		# remove unused trdata flag fields
+		narc_format = adjust_narc_format(trdata, narc_format)
 		# print(json_data)
 		num_pokemon = json_data["readable"]["count"]
 
-		
-		narc_format = narc_format[template]
+		if file_name == 496:
+			print(narc_format)
+
 
 		#USE THE FORMAT LIST TO PARSE BYTES
 		for n in range(0, num_pokemon):
+			pok_narc_format = copy.deepcopy(narc_format)
+
+
 			
-			for entry in narc_format: 
+			# remove unused adiitional flag fields
+			if [4, "additional_flags"] in pok_narc_format:
+				pok_narc_format = adjust_pok_narc_format(json_data["raw"], pok_narc_format, n)
+
+				if file_name == 496:
+					print(pok_narc_format)
+			
+			for entry in pok_narc_format: 
 				if f'{entry[1]}_{n}' in json_data["raw"]:
 					data = json_data["raw"][f'{entry[1]}_{n}']
 					write_bytes(stream, entry[0], data)
@@ -153,9 +168,6 @@ def write_readable_to_raw(file_name, narc_name="trpok"):
 
 		tr_data = json.load(open(f'{ROM_NAME}/json/trdata/{file_name}.json', "r"))
 		template = tr_data["raw"]["template"]
-
-
-
 
 		new_raw_data = to_raw(json_data["readable"], template, tr_data)
 		json_data["raw"] = new_raw_data[0]
@@ -188,7 +200,7 @@ def to_raw(readable, template, trdata):
 			for idx, flag in enumerate(POK_FLAG_BINDINGS):
 				if f'{flag}_{n}' in raw:
 					flag_values.append(1 << idx)
-					print(flag)
+					# print(flag)
 
 			if flag_values != []:
 				additional_flags = 0
@@ -196,6 +208,7 @@ def to_raw(readable, template, trdata):
 					additional_flags = additional_flags | value
 
 				raw[f'additional_flags_{n}'] = additional_flags
+				tr_flag_values.append(1 << 7)
 
 			
 			# set tr flags based on fields found with data
@@ -211,9 +224,6 @@ def to_raw(readable, template, trdata):
 					tr_flag_values.append(1 << idx)
 					print(flag)
 
-			print(tr_flag_values)
-
-				
 
 			for m in range(1,5):
 				if f'move_{m}_{n}' in readable:
@@ -240,6 +250,78 @@ def to_raw(readable, template, trdata):
 def write_bytes(stream, n, data):
 	stream += (int(data).to_bytes(n, 'little'))		
 	return stream
+
+
+def adjust_pok_narc_format(trpok, narc_format, trpok_index):
+	flag_value = trpok[f"additional_flags_{trpok_index}"]
+	flag_binary = bin(flag_value)[2:].zfill(10)
+
+	if flag_binary[-1] != "1":
+		narc_format.remove([4, "status"])
+
+	if flag_binary[-2] != "1":
+		narc_format.remove([2, "hp"])
+
+	if flag_binary[-3] != "1":
+		narc_format.remove([2, "atk"])
+
+	if flag_binary[-4] != "1":
+		narc_format.remove([2, "def"])
+
+	if flag_binary[-5] != "1":
+		narc_format.remove([2, "spd"])	
+	
+	if flag_binary[-6] != "1":
+		narc_format.remove([2, "spatk"])	
+	
+
+	if flag_binary[-7] != "1":			
+		narc_format.remove([2, "spdef"])
+	
+	if flag_binary[-8] != "1":			
+		narc_format.remove([1, "type_1"])
+		narc_format.remove([1, "type_2"])
+
+	if flag_binary[-9] != "1":			
+		for n in range(1,5):
+			narc_format.remove([1, f"move_{n}_pp"])
+
+	return narc_format
+
+
+def adjust_narc_format(trdata, narc_format):
+	flag_value = trdata["template"]
+	flag_binary = bin(flag_value)[2:].zfill(10)
+
+	if flag_binary[-1] != "1":
+		for n in range(1,5):
+			narc_format.remove([2, f"move_{n}"])
+
+	if flag_binary[-2] != "1":
+		narc_format.remove([2, "item_id"])
+
+	if flag_binary[-3] != "1":
+		narc_format.remove([2, "custom_ability"])
+
+	if flag_binary[-4] != "1":
+		narc_format.remove([2, "ball"])
+
+	if flag_binary[-5] != "1":
+		for value_type in ["iv", "ev"]:
+			for stat in ["hp", "atk", "def", "spd", "spatk", "spdef"]:
+				narc_format.remove([1, f'{stat}_{value_type}'])	
+	
+	if flag_binary[-6] != "1":			
+		narc_format.remove([1, "nature"])
+
+	if flag_binary[-7] != "1":			
+		narc_format.remove([1, "shiny_lock"])
+	
+	if flag_binary[-8] != "1":			
+		narc_format.remove([4, "additional_flags"])
+
+
+	return narc_format
 
 ################ If run with arguments #############
 

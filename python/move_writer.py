@@ -21,7 +21,7 @@ with open(f'session_settings.json', "r") as outfile:
 	# B_ANIMATION_ID = settings["battle_animations"]
 
 TYPES = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel","Mystery", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"]
-CATEGORIES = ["Status","Physical","Special"]
+CATEGORIES = ["Physical","Special","Status"]
 
 EFFECT_CATEGORIES = ["No Special Effect", "Status Inflicting","Target Stat Changing","Healing","Chance to Inflict Status","Raising Target's Stat along Attack", "Lowering Target's Stat along Attack","Raise user stats","Lifesteal","OHKO","Weather","Safeguard", "Force Switch Out", "Unique Effect"]
 

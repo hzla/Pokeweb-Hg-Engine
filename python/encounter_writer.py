@@ -13,7 +13,7 @@ import sys
 
 ######################### CONSTANTS #############################
 def set_global_vars():
-	global LOCATIONS, ROM_NAME, NARC_FORMAT, POKEDEX, NARC_FILE_ID
+	global LOCATIONS, ROM_NAME, ENCOUNTER_NARC_FORMAT, POKEDEX, NARC_FILE_ID
 	
 	with open(f'session_settings.json', "r") as outfile:  
 		settings = json.load(outfile) 
@@ -65,7 +65,7 @@ def output_narc(narc_name="encounters"):
 	for f in json_files:
 		file_name = int(f.split(".")[0])
 
-		write_narc_data(file_name, NARC_FORMAT, narc, "encounters")
+		write_narc_data(file_name, ENCOUNTER_NARC_FORMAT, narc, "encounters")
 
 	old_narc = open(narcfile_path, "wb")
 	old_narc.write(narc.save()) 
