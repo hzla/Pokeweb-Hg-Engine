@@ -10,9 +10,11 @@ Personals, level-up learnsets, moves, encounters, trainers, evolutions.
 You can join this Pokemon DS Rom Hacking discord server for updates as well as general support for your Pokemon gen IV/V rom hacking needs. [https://discord.gg/cTKQq5Y](https://discord.gg/cTKQq5Y)
 
 
-## Installation
+## Getting an HG-Engine Rom
 
-Build a hg-engine rom here [HG-Engine](https://github.com/BluRosie/hg-engine)
+Build a hg-engine rom here [HG-Engine](https://github.com/BluRosie/hg-engine).
+
+## Pokeweb Installation
 
 
 Pokeweb HG-Engine installation is the same as [Pokeweb Gen 5](https://github.com/hzla/Pokeweb).
