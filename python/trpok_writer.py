@@ -193,7 +193,9 @@ def to_raw(readable, template, trdata):
 	while n < readable["count"]:
 		if f'species_id_{n}' in raw:	
 
-			raw[f'species_id_{n}'] = POKEDEX.index(readable[f'species_id_{n}'])
+			form = raw[f'form_{n}']
+			raw[f'species_id_{n}'] = ((form - 1) << 11 | POKEDEX.index(readable[f'species_id_{n}']))
+
 			flag_values = []
 
 			# set additional flags based on fields found with data
@@ -322,6 +324,16 @@ def adjust_narc_format(trdata, narc_format):
 
 
 	return narc_format
+
+def get_form(species_id):
+	if species_id < 2048:
+		return [1, species_id]
+	else:
+		form = species_id // 2048
+		base_form_id = raw[f'target_{n}'] - (2048 * form)
+		return [form + 1, base_form_id]
+
+
 
 ################ If run with arguments #############
 

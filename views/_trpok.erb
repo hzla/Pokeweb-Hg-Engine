@@ -8,6 +8,10 @@
 				<%= field "species_id_#{trpok_index}", 'tr-item trpok-name', {value: trpok["species_id_#{trpok_index}"].name_titleize,  narc: "trpok", autofill: "pokemon_names"} %>	
 			</div>
 			<div class="expanded-field">
+				<div class="expanded-trlabel">Form</div>
+				<%= field "form_#{trpok_index}", 'tr-item', {value: trpok["form_#{trpok_index}"].name_titleize,  narc: "trpok", type: "int-32"} %>	
+			</div>
+			<div class="expanded-field">
 				<div class="expanded-trlabel">Level</div>
 				<%= field "level_#{trpok_index}", 'tr-item trpok-lvl', {value: trpok["level_#{trpok_index}"],  narc: "trpok", type: "int-100"} %>	
 			</div>

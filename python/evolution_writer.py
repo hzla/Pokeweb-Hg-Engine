@@ -100,7 +100,7 @@ def to_raw(readable):
 	for n in range(0,7):
 		
 		raw[f'method_{n}'] = METHODS.index(readable[f'method_{n}'])
-		raw[f'target_{n}'] = ((raw[f'target_form_{n}'] - 1) << 10 | POKEDEX.index(readable[f'target_{n}']))
+		raw[f'target_{n}'] = ((raw[f'target_form_{n}'] - 1) << 11 | POKEDEX.index(readable[f'target_{n}']))
 
 
 		if raw[f'method_{n}'] in [6,7,16,17,18,19]:

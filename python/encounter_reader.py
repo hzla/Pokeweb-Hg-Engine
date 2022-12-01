@@ -107,11 +107,11 @@ def read_bytes(stream, n):
 	return int.from_bytes(stream.read(n), 'little')
 
 def get_form(species_id):
-	if species_id < 1024:
+	if species_id < 2048:
 		return [1, species_id]
 	else:
-		form = species_id // 1024
-		base_form_id = raw[f'target_{n}'] - (1024 * form)
+		form = species_id // 2048
+		base_form_id = raw[f'target_{n}'] - (2048 * form)
 		return [form + 1, base_form_id]
 
 

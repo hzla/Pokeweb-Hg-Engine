@@ -68,9 +68,11 @@ def to_readable(raw, file_name):
 
 
 
-		if (raw[f'target_{n}']) > 1024:
-			form = raw[f'target_{n}'] // 1024
-			base_form_id = raw[f'target_{n}'] - (1024 * form)
+		if (raw[f'target_{n}']) > 2048:
+			# print(file_name)
+			# print(raw)
+			form = raw[f'target_{n}'] // 2048 
+			base_form_id = raw[f'target_{n}'] - (2048 * form )
 			readable[f'target_{n}'] = POKEDEX[base_form_id]
 			readable[f'target_form_{n}'] = form + 1
 		else:

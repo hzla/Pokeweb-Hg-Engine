@@ -116,17 +116,17 @@ def to_raw(readable):
 
 	for time in ["morning", "day", "night"]:
 		for n in range(0,12):
-			raw[f'{time}_{n}_species_id'] = ((readable[f'{time}_{n}_species_form'] - 1) << 10 | POKEDEX.index(readable[f'{time}_{n}_species_id']))
+			raw[f'{time}_{n}_species_id'] = ((readable[f'{time}_{n}_species_form'] - 1) << 11 | POKEDEX.index(readable[f'{time}_{n}_species_id']))
 
 
 	for region in ["hoenn", "sinnoh"]:
 		for n in range(0,2):
-			raw[f'{region}_{n}_species_id'] = ((readable[f'{region}_{n}_species_form'] - 1) << 10 | POKEDEX.index(readable[f'{region}_{n}_species_id']))
+			raw[f'{region}_{n}_species_id'] = ((readable[f'{region}_{n}_species_form'] - 1) << 11 | POKEDEX.index(readable[f'{region}_{n}_species_id']))
 
 	method_counts = [5,2,5,5,5]
 	for idx, method in enumerate(["surf", "rock_smash", "old_rod", "good_rod", "super_rod"]):
 		for n in range(0, method_counts[idx]):
-			raw[f'{method}_{n}_species_id'] = ((readable[f'{method}_{n}_species_form'] - 1) << 10 | POKEDEX.index(readable[f'{method}_{n}_species_id']))
+			raw[f'{method}_{n}_species_id'] = ((readable[f'{method}_{n}_species_form'] - 1) << 11 | POKEDEX.index(readable[f'{method}_{n}_species_id']))
 
 	return raw
 	
