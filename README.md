@@ -1,9 +1,5 @@
 
 # Pokeweb: HG-Engine
-<p align="center">
-    <img src="https://i.imgur.com/CP232tv.png" width="auto" height="400">
-</p>
-
 
 ## Features
 
