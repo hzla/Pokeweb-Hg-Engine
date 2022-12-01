@@ -75,7 +75,7 @@ def read_narc_data(data, narc_format, file_count):
 			headers[n][entry[1]] = byte
 
 		try:
-			headers[n]["location_name"] = LOCATIONS[headers[n]["location_name_id"]]
+			headers[n]["location_name"] = LOCATIONS[headers[n]["location_name_id"] + 1]
 		except:
 			headers[n]["location_name"] = "Unknown Location"
 
