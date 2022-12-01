@@ -12,7 +12,9 @@ You can join this Pokemon DS Rom Hacking discord server for updates as well as g
 
 ## Getting an HG-Engine Rom
 
-Build a hg-engine rom here [HG-Engine](https://github.com/BluRosie/hg-engine).
+Build a hg-engine rom here [HG-Engine](https://github.com/BluRosie/hg-engine). 
+
+Or use patch in Reference_Files.
 
 ## Pokeweb Installation
 
